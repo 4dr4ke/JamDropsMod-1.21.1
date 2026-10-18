@@ -1,4 +1,4 @@
-package net.ssum.jamdropsmod;
+package net.ssum.flains;
 
 import org.slf4j.Logger;
 
@@ -15,14 +15,14 @@ import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 
 // The value here should match an entry in the META-INF/neoforge.mods.toml file
-@Mod(JamDropsMod.MOD_ID)
-public class JamDropsMod {
-    public static final String MOD_ID = "examplemod";
+@Mod(Flains.MOD_ID)
+public class Flains {
+    public static final String MOD_ID = "flains";
     public static final Logger LOGGER = LogUtils.getLogger();
 
     // The constructor for the mod class is the first code that is run when your mod is loaded.
     // FML will recognize some parameter types like IEventBus or ModContainer and pass them in automatically.
-    public JamDropsMod(IEventBus modEventBus, ModContainer modContainer) {
+    public Flains(IEventBus modEventBus, ModContainer modContainer) {
         // Register the commonSetup method for modloading
         modEventBus.addListener(this::commonSetup);
 
