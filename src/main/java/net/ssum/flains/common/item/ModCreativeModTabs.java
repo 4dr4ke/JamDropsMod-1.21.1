@@ -17,14 +17,16 @@ public class ModCreativeModTabs {
 
     public static final Supplier<CreativeModeTab> FLAINS_TAB = CREATIVE_MODE_TAB.register("flains_tab",
             () -> CreativeModeTab.builder()
-                    .icon(() -> new ItemStack(ModItems.THORN_FLOWER.get()))
+                    .icon(() -> new ItemStack(ModItems.ROSE.get()))
                     .title(Component.translatable("itemGroup.flains"))
                     .displayItems((itemDisplayParameters, output) -> {
 
                         // ADD STUFF TO THE TAB HERE:
                         // Blocks
-                        output.accept(ModBlocks.THORN_FLOWER.get());
-                        output.accept(ModBlocks.SMALL_POPPY.get());
+                        output.accept(ModBlocks.HARMONY_FLOWER.get());
+                        output.accept(ModBlocks.ROSE.get());
+                        output.accept(ModBlocks.LAVENDER.get());
+                        output.accept(ModBlocks.CORNFLOWER.get());
 
                     }).build());
 

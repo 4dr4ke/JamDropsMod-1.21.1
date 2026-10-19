@@ -12,12 +12,20 @@ public class ModItems {
             DeferredRegister.createItems(Flains.MOD_ID);
 
     // flowers
-    public static final DeferredItem<BlockItem> THORN_FLOWER = ITEMS.registerSimpleBlockItem(
-            "thorn_flower", ModBlocks.THORN_FLOWER
+    public static final DeferredItem<BlockItem> HARMONY_FLOWER = ITEMS.registerSimpleBlockItem(
+            "harmony_flower", ModBlocks.HARMONY_FLOWER
     );
 
-    public static final DeferredItem<BlockItem> SMALL_POPPY = ITEMS.registerSimpleBlockItem(
-            "small_poppy", ModBlocks.SMALL_POPPY
+    public static final DeferredItem<BlockItem> ROSE = ITEMS.registerSimpleBlockItem(
+            "rose", ModBlocks.ROSE
+    );
+
+    public static final DeferredItem<BlockItem> LAVENDER = ITEMS.registerSimpleBlockItem(
+            "lavender", ModBlocks.LAVENDER
+    );
+
+    public static final DeferredItem<BlockItem> CORNFLOWER = ITEMS.registerSimpleBlockItem(
+            "cornflower", ModBlocks.CORNFLOWER
     );
 
     public static void register(IEventBus eventBus) {

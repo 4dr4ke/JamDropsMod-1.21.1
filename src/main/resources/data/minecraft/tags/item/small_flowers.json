@@ -1,7 +1,9 @@
 {
   "replace": false,
   "values": [
-    "flains:thorn_flower",
-    "flains:small_poppy"
+    "flains:rose",
+    "flains:harmony_flower",
+    "flains:lavender",
+    "flains:cornflower"
   ]
 }
