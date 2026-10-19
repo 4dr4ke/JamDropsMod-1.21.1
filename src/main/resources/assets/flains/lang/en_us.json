@@ -1,6 +1,8 @@
 {
-  "block.flains.tall_poppy": "Small Poppy",
-  "block.flains.thorn_flower": "Thorn Flower",
+  "block.flains.harmony_flower": "Harmony Flower",
+  "block.flains.lavender": "Lavender",
+  "block.flains.cornflower": "Cornflower",
+  "block.flains.rose": "Rose",
 
   "entity.flains.moumouton": "Moumouton",
 

@@ -1,6 +1,8 @@
 {
-  "block.flains.small_poppy": "Petit Coquelicot",
-  "block.flains.thorn_flower": "Fleur Épineuse",
+  "block.flains.harmony_flower": "Fleur d'Harmonie",
+  "block.flains.lavender": "Lavande",
+  "block.flains.cornflower": "Bleuet",
+  "block.flains.rose": "Rose",
 
   "entity.flains.moumouton": "Moumouton",
 

@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "flains:block/flowers/small_poppy"
+    "layer0": "flains:block/flowers/harmony_flower"
   }
 }
