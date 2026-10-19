@@ -1,0 +1,9 @@
+{
+  "block.flains.small_poppy": "Mini Coquelicot",
+  "block.flains.thorn_flower": "Fleur Épineuse",
+
+  "entity.flains.moumouton": "Moumouton",
+
+  "itemGroup.flains": "Flains",
+  "flains.configuration.title": "Configuration de Flains"
+}

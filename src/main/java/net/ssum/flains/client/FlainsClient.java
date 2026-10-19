@@ -1,4 +1,4 @@
-package net.ssum.flains;
+package net.ssum.flains.client;
 
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -8,6 +8,7 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
+import net.ssum.flains.Flains;
 
 // This class will not load on dedicated servers. Accessing client side code from here is safe.
 @Mod(value = Flains.MOD_ID, dist = Dist.CLIENT)

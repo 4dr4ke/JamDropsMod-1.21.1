@@ -1,3 +1,9 @@
 {
+  "block.flains.small_poppy": "Small Poppy",
+  "block.flains.thorn_flower": "Thorn Flower",
 
+  "entity.flains.moumouton": "Moumouton",
+
+  "itemGroup.flains": "Flains",
+  "flains.configuration.title": "Flains Configs"
 }
