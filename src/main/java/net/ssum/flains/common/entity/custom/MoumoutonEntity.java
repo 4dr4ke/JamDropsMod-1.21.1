@@ -37,6 +37,7 @@ public class MoumoutonEntity extends Animal implements GeoEntity {
     private final AnimatableInstanceCache geoCache = GeckoLibUtil.createInstanceCache(this);
     private int scaredTicks = 0;
     private int scaredCooldownTicks = 0;
+    private int nextRandomIdleTime = 0;
 
     public MoumoutonEntity(EntityType<? extends Animal> entityType, Level level) {
         super(entityType, level);
@@ -49,9 +50,14 @@ public class MoumoutonEntity extends Animal implements GeoEntity {
     }
 
     // Animations
-
     private static final RawAnimation IDLE =
             RawAnimation.begin().thenLoop("idle");
+
+    private static final RawAnimation RANDOM_IDLE_ANIM1 =
+            RawAnimation.begin().thenPlay("random_idle_anim1");
+
+    private static final RawAnimation RANDOM_IDLE_ANIM2 =
+            RawAnimation.begin().thenPlay("random_idle_anim2");
 
     private static final RawAnimation WALK =
             RawAnimation.begin().thenLoop("walk");
@@ -69,6 +75,9 @@ public class MoumoutonEntity extends Animal implements GeoEntity {
     private static final RawAnimation HURT =
             RawAnimation.begin().thenPlay("hurt");
 
+    private static final RawAnimation HIT =
+            RawAnimation.begin().thenPlay("hit");
+
     private static final RawAnimation ATTACK =
             RawAnimation.begin().thenPlay("dash");
 
@@ -78,7 +87,7 @@ public class MoumoutonEntity extends Animal implements GeoEntity {
         return Mob.createMobAttributes()
                 .add(Attributes.MAX_HEALTH, 14d)
                 .add(Attributes.MOVEMENT_SPEED, 0.12d)
-                .add(Attributes.FOLLOW_RANGE, 10d)
+                .add(Attributes.FOLLOW_RANGE, 50d)
                 .add(Attributes.ATTACK_DAMAGE, 3d);
     }
 
@@ -87,9 +96,9 @@ public class MoumoutonEntity extends Animal implements GeoEntity {
     @Override
     protected void registerGoals() {
         this.goalSelector.addGoal(0, new FloatGoal(this));
-        this.goalSelector.addGoal(1, new MoumoutonChargeGoal(this, 4, 10));
-        this.goalSelector.addGoal(2, new MeleeAttackGoal(this, 2, true));
-        this.goalSelector.addGoal(3, new MoumoutonScaredGoal(this));
+        this.goalSelector.addGoal(1, new MoumoutonScaredGoal(this));
+        this.goalSelector.addGoal(2, new MoumoutonChargeGoal(this, 4, 10));
+        this.goalSelector.addGoal(3, new MeleeAttackGoal(this, 2, true));
         this.goalSelector.addGoal(4, new BreedGoal(this, 1.2));
         this.goalSelector.addGoal(5, new TemptGoal(this, 1.2, Ingredient.of(Items.WHEAT), false));
         this.goalSelector.addGoal(6, new FollowParentGoal(this, 1.2));
@@ -102,6 +111,19 @@ public class MoumoutonEntity extends Animal implements GeoEntity {
     @Override
     protected void customServerAiStep() {
         super.customServerAiStep();
+
+        nextRandomIdleTime--;
+        if (nextRandomIdleTime <= 0 && !this.level().isClientSide) {
+            nextRandomIdleTime = random.nextInt(300, 450);
+
+            boolean notGood = this.isScared() || this.getTarget() != null || this.isAggressive() || !this.getNavigation().isDone();
+
+            if (!notGood) {
+                int i = random.nextInt(1, 3); // 1 or 2
+                String animation = "random_idle_anim" + i;
+                triggerAnim("actions", animation);
+            }
+        }
 
         if (this.scaredCooldownTicks > 0)
             this.scaredCooldownTicks--;
@@ -130,7 +152,10 @@ public class MoumoutonEntity extends Animal implements GeoEntity {
         controllers.add(new AnimationController<>(
                 this, "actions", 0, state -> PlayState.STOP)
                 .triggerableAnim("hurt", HURT)
+                .triggerableAnim("random_idle_anim1", RANDOM_IDLE_ANIM1)
+                .triggerableAnim("random_idle_anim2", RANDOM_IDLE_ANIM2)
                 .triggerableAnim("attack", ATTACK)
+                .triggerableAnim("hit", HIT)
                 .triggerableAnim("death", DEATH)
                 .triggerableAnim("scared", SCARED)
                 .triggerableAnim("no_longer_scared", NO_LONGER_SCARED));
@@ -148,13 +173,16 @@ public class MoumoutonEntity extends Animal implements GeoEntity {
     }
 
     private void setScared(boolean scared) {
-        if (this.isScared() && !scared && !this.level().isClientSide)
-            this.triggerAnim("actions", "no_longer_scared");
+        Level level = this.level();
 
+        if (!level.isClientSide && this.isScared() && !scared) {
+            this.triggerAnim("actions", "no_longer_scared");
+            this.playSound(SoundEvents.SHULKER_OPEN, 0.8f, 1.0f - this.random.nextFloat() * 0.3f);
+            this.playSound(SoundEvents.ARMADILLO_ROLL, 0.9f, 0.7f - this.random.nextFloat() * 0.2f);
+        }
         this.entityData.set(DATA_SCARED, scared);
         this.scaredTicks = SCARED_DURATION;
     }
-
 
     public void tryScare() {
         if (this.getTarget() != null || this.isAggressive()) {
@@ -166,12 +194,15 @@ public class MoumoutonEntity extends Animal implements GeoEntity {
 
         this.scaredTicks = SCARED_DURATION;
         this.setScared(true);
+
+        this.playSound(SoundEvents.ARMADILLO_ROLL, 0.9f, 0.7f - this.random.nextFloat() * 0.2f);
+        this.playSound(SoundEvents.SHULKER_CLOSE, 0.8f, 1.0f - this.random.nextFloat() * 0.3f);
     }
 
     @Override
     public boolean doHurtTarget(Entity target) {
         if (!this.level().isClientSide) {
-            this.triggerAnim("actions", "attack");
+            this.triggerAnim("actions", "hit");
         }
         return super.doHurtTarget(target);
     }
@@ -183,6 +214,9 @@ public class MoumoutonEntity extends Animal implements GeoEntity {
         if (damaged && !this.level().isClientSide) {
             this.triggerAnim("actions", "hurt");
         }
+
+        if (this.isScared())
+            this.setScared(false);
 
         return damaged;
     }

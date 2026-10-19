@@ -18,7 +18,7 @@ public class ModEntities {
     public static final Supplier<EntityType<MoumoutonEntity>> MOUMOUTON =
             ENTITY_TYPES.register("moumouton", () -> EntityType.Builder.of(
                     MoumoutonEntity::new, MobCategory.CREATURE)
-                    .sized(2f, 1.3f).build("moumouton")
+                    .sized(1.8f, 1.5f).build("moumouton")
             );
 
     public static void register(IEventBus eventBus) {
