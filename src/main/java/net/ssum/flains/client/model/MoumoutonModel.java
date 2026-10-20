@@ -1,4 +1,4 @@
-package net.ssum.flains.client.model.entity;
+package net.ssum.flains.client.model;
 
 import net.minecraft.resources.ResourceLocation;
 import net.ssum.flains.Flains;

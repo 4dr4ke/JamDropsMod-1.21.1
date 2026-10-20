@@ -1,15 +1,20 @@
 package net.ssum.flains.common.entity.ai;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.ssum.flains.common.entity.custom.MoumoutonEntity;
 
@@ -52,11 +57,11 @@ public class MoumoutonChargeGoal extends Goal {
         if (target == null || !target.isAlive() || !isValidTarget(target))
             return false;
 
-        if (this.mob.isScared() || this.mob.level().getGameTime() < this.nextUseTicks)
+        if (this.mob.isBaby() || this.mob.isScared() || this.mob.level().getGameTime() < this.nextUseTicks)
             return false;
 
-        double distSqr = this.mob.distanceToSqr(target);
-        return distSqr <= this.triggerChargeRange && distSqr >= this.minRangeAllowed && this.mob.getSensing().hasLineOfSight(target);
+        double dist = this.mob.distanceToSqr(target);
+        return dist <= this.triggerChargeRange && dist >= this.minRangeAllowed && this.mob.getSensing().hasLineOfSight(target);
     }
 
     @Override
@@ -144,6 +149,22 @@ public class MoumoutonChargeGoal extends Goal {
             float pitch = 1.0f - random.nextFloat() * 0.3f;
             this.mob.playSound(SoundEvents.RAVAGER_STEP, 0.3f, pitch);
             this.mob.playSound(SoundEvents.HORSE_STEP, 1.0f, pitch);
+
+            BlockPos currentPos = this.mob.blockPosition();
+            BlockState currentBlock = level.getBlockState(currentPos);
+            BlockPos below = currentPos.below();
+            BlockState blockBelow = level.getBlockState(below);
+
+            if (currentBlock.is(BlockTags.FLOWERS) || currentBlock.is(BlockTags.REPLACEABLE_BY_TREES) || currentBlock.is(BlockTags.SMALL_FLOWERS))
+                level.destroyBlock(currentPos, true);
+
+            if (blockBelow.is(BlockTags.FLOWERS) || blockBelow.is(BlockTags.REPLACEABLE_BY_TREES) || blockBelow.is(BlockTags.SMALL_FLOWERS))
+                level.destroyBlock(below, true);
+
+            if (blockBelow.is(BlockTags.DIRT)) {
+                level.setBlock(below, Blocks.DIRT.defaultBlockState(), Block.UPDATE_ALL);
+                this.mob.playSound(SoundEvents.GRASS_BREAK, 0.7f, pitch);
+            }
         }
 
         if (level instanceof ServerLevel serverLevel) {

@@ -23,7 +23,8 @@ public class ModCommonEvents {
 
         if (level.isClientSide)
             return;
-        if (!player.isSprinting())
+
+        if (!player.isSprinting() || player.isCreative() || player.isSpectator())
             return;
 
         AABB searchBox = player.getBoundingBox().inflate(10);

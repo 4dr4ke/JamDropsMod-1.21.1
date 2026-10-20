@@ -27,6 +27,8 @@ public class ModCreativeModTabs {
                         output.accept(ModBlocks.ROSE.get());
                         output.accept(ModBlocks.LAVENDER.get());
                         output.accept(ModBlocks.CORNFLOWER.get());
+                        output.accept(ModBlocks.CLOVERS.get());
+                        output.accept(ModBlocks.THICK_BUSH.get());
 
                     }).build());
 
