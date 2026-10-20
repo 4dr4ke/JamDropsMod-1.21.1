@@ -1,5 +1,6 @@
 package net.ssum.flains.common.entity.custom;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -17,6 +18,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.ssum.flains.common.entity.ModEntities;
 import net.ssum.flains.common.entity.ai.MoumoutonChargeGoal;
 import net.ssum.flains.common.entity.ai.MoumoutonScaredGoal;
@@ -89,6 +91,14 @@ public class MoumoutonEntity extends Animal implements GeoEntity {
                 .add(Attributes.MOVEMENT_SPEED, 0.12d)
                 .add(Attributes.FOLLOW_RANGE, 50d)
                 .add(Attributes.ATTACK_DAMAGE, 3d);
+    }
+
+    // Baby
+
+    @Override
+    protected EntityDimensions getDefaultDimensions(Pose pose) {
+        EntityDimensions dimensions = super.getDefaultDimensions(pose);
+        return this.isBaby() ? dimensions.scale(0.5f) : dimensions;
     }
 
     // AI
@@ -249,5 +259,10 @@ public class MoumoutonEntity extends Animal implements GeoEntity {
     @Override
     protected @Nullable SoundEvent getDeathSound() {
         return SoundEvents.SHEEP_DEATH;
+    }
+
+    @Override
+    protected void playStepSound(BlockPos pos, BlockState state) {
+        this.playSound(SoundEvents.HORSE_STEP, 0.15F, 1.0F);
     }
 }

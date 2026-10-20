@@ -11,6 +11,17 @@ public class ModItems {
     public static final DeferredRegister.Items ITEMS =
             DeferredRegister.createItems(Flains.MOD_ID);
 
+    // plants
+
+    public static final DeferredItem<BlockItem> CLOVERS = ITEMS.registerSimpleBlockItem(
+            "clovers", ModBlocks.CLOVERS
+    );
+
+
+    public static final DeferredItem<BlockItem> THICK_BUSH = ITEMS.registerSimpleBlockItem(
+            "thick_bush", ModBlocks.THICK_BUSH
+    );
+
     // flowers
     public static final DeferredItem<BlockItem> HARMONY_FLOWER = ITEMS.registerSimpleBlockItem(
             "harmony_flower", ModBlocks.HARMONY_FLOWER

@@ -1,0 +1,77 @@
+{
+  "type": "minecraft:flower",
+  "config": {
+    "feature": {
+      "feature": {
+        "type": "minecraft:simple_block",
+        "config": {
+          "to_place": {
+            "type": "minecraft:weighted_state_provider",
+            "entries": [
+              {
+                "data": {
+                  "Name": "minecraft:poppy"
+                },
+                "weight": 2
+              },
+              {
+                "data": {
+                  "Name": "minecraft:cornflower"
+                },
+                "weight": 1
+              },
+              {
+                "data": {
+                  "Name": "minecraft:allium"
+                },
+                "weight": 2
+              },
+              {
+                "data": {
+                  "Name": "minecraft:azure_bluet"
+                },
+                "weight": 1
+              },
+              {
+                "data": {
+                  "Name": "flains:cornflower"
+                },
+                "weight": 2
+              },
+              {
+                "data": {
+                  "Name": "flains:harmony_flower"
+                },
+                "weight": 1
+              },
+              {
+                "data": {
+                  "Name": "flains:lavender"
+                },
+                "weight": 2
+              },
+              {
+                "data": {
+                  "Name": "flains:rose"
+                },
+                "weight": 1
+              }
+            ]
+          }
+        }
+      },
+      "placement": [
+        {
+          "type": "minecraft:block_predicate_filter",
+          "predicate": {
+            "type": "minecraft:matching_blocks",
+            "blocks": "minecraft:air"
+          }
+        }
+      ]
+    },
+    "tries": 96,
+    "xz_spread": 6,
+    "y_spread": 2
+  }
+}

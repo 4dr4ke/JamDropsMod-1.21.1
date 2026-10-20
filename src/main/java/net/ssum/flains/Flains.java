@@ -7,6 +7,8 @@ import net.ssum.flains.common.block.ModBlocks;
 import net.ssum.flains.common.entity.ModEntities;
 import net.ssum.flains.common.item.ModCreativeModTabs;
 import net.ssum.flains.common.item.ModItems;
+import net.ssum.flains.common.worldgen.biome.ModOverworldRegion;
+import net.ssum.flains.common.worldgen.biome.ModTerrablender;
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
@@ -20,6 +22,7 @@ import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
+import terrablender.api.Regions;
 
 // The value here should match an entry in the META-INF/neoforge.mods.toml file
 @Mod(Flains.MOD_ID)
@@ -43,6 +46,7 @@ public class Flains {
         ModItems.register(modEventBus);
         ModBlocks.register(modEventBus);
         ModEntities.register(modEventBus);
+        ModTerrablender.registerBiomes();
 
         // Register the item to a creative tab
         modEventBus.addListener(this::addCreative);
