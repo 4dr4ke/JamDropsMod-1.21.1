@@ -38,7 +38,6 @@ public class ModBiomes {
     private static Biome bloomBiome(BootstrapContext<Biome> context) {
         MobSpawnSettings.Builder spawnBuilder = new MobSpawnSettings.Builder();
 
-        spawnBuilder.creatureGenerationProbability(0.5F);
         spawnBuilder.addSpawn(MobCategory.CREATURE, new MobSpawnSettings.SpawnerData(ModEntities.MOUMOUTON.get(), 15, 1, 3));
 
         BiomeDefaultFeatures.farmAnimals(spawnBuilder);

@@ -131,7 +131,10 @@ public class MoumoutonChargeGoal extends Goal {
 
             // start the charge
             this.mob.getNavigation().moveTo(this.chargeEnd.x, this.chargeEnd.y, this.chargeEnd.z, this.chargeSpeed);
-            this.mob.triggerAnim("actions", "attack");
+
+            // play the charge animation if the mob isn't sheared
+            if (!this.mob.isSheared())
+                this.mob.triggerAnim("actions", "attack");
 
             this.state = State.CHARGE;
             this.stateTicks = 0;

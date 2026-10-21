@@ -1,12 +1,15 @@
 package net.ssum.flains.common.entity.custom;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -14,14 +17,22 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.animal.Animal;
+import net.minecraft.world.entity.animal.Sheep;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.gameevent.GameEvent;
+import net.neoforged.neoforge.common.IShearable;
+import net.ssum.flains.FlainsUtils;
 import net.ssum.flains.common.entity.ModEntities;
 import net.ssum.flains.common.entity.ai.MoumoutonChargeGoal;
 import net.ssum.flains.common.entity.ai.MoumoutonScaredGoal;
+import net.ssum.flains.common.item.ModItems;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
@@ -31,24 +42,71 @@ import software.bernie.geckolib.animation.PlayState;
 import software.bernie.geckolib.animation.RawAnimation;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
-public class MoumoutonEntity extends Animal implements GeoEntity {
+import java.util.List;
+import java.util.UUID;
+
+public class MoumoutonEntity extends Animal implements GeoEntity, IShearable {
     private static final EntityDataAccessor<Boolean> DATA_SCARED = SynchedEntityData.defineId(MoumoutonEntity.class, EntityDataSerializers.BOOLEAN);
-    private final int SCARED_DURATION = 100; // 5s
+    private static final EntityDataAccessor<Boolean> SHEARED = SynchedEntityData.defineId(MoumoutonEntity.class, EntityDataSerializers.BOOLEAN);
     private final int SCARED_COOLDOWN = 10; // 0.5s
 
     private final AnimatableInstanceCache geoCache = GeckoLibUtil.createInstanceCache(this);
     private int scaredTicks = 0;
     private int scaredCooldownTicks = 0;
     private int nextRandomIdleTime = 0;
+    private int shearedTicks = 0;
+    private UUID targetUUID;
 
     public MoumoutonEntity(EntityType<? extends Animal> entityType, Level level) {
         super(entityType, level);
     }
 
+    // Data
+
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         super.defineSynchedData(builder);
         builder.define(DATA_SCARED, false);
+        builder.define(SHEARED, false);
+    }
+
+    @Override
+    public void addAdditionalSaveData(CompoundTag compound) {
+        super.addAdditionalSaveData(compound);
+        compound.putBoolean("sheared", this.isSheared());
+        compound.putInt("randomIdle", this.nextRandomIdleTime);
+
+        if (this.getTarget() != null) {
+            compound.putUUID("target", this.getTarget().getUUID());
+        }
+    }
+
+    @Override
+    public void readAdditionalSaveData(CompoundTag compound) {
+        super.readAdditionalSaveData(compound);
+        if (compound.contains("sheared"))
+            this.setSheared(compound.getBoolean("sheared"));
+        if (compound.contains("randomIdle"))
+            this.nextRandomIdleTime = compound.getInt("randomIdle");
+        if (compound.hasUUID("target"))
+            this.targetUUID = compound.getUUID("target");
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+
+        // the moumouton remembers its target
+        Level level = this.level();
+        if (!level.isClientSide && this.targetUUID != null && this.getTarget() == null) {
+            if (level instanceof ServerLevel serverLevel) {
+                Entity entity = serverLevel.getEntity(this.targetUUID);
+                if (entity instanceof LivingEntity livingEntity) {
+                    this.setTarget(livingEntity);
+                }
+            }
+            this.targetUUID = null;
+        }
     }
 
     // Animations
@@ -88,7 +146,7 @@ public class MoumoutonEntity extends Animal implements GeoEntity {
     public static AttributeSupplier.Builder createAttribute() {
         return Mob.createMobAttributes()
                 .add(Attributes.MAX_HEALTH, 14d)
-                .add(Attributes.MOVEMENT_SPEED, 0.12d)
+                .add(Attributes.MOVEMENT_SPEED, 0.09d)
                 .add(Attributes.FOLLOW_RANGE, 50d)
                 .add(Attributes.ATTACK_DAMAGE, 3d);
     }
@@ -107,7 +165,7 @@ public class MoumoutonEntity extends Animal implements GeoEntity {
     protected void registerGoals() {
         this.goalSelector.addGoal(0, new FloatGoal(this));
         this.goalSelector.addGoal(1, new MoumoutonScaredGoal(this));
-        this.goalSelector.addGoal(2, new MoumoutonChargeGoal(this, 4, 10));
+        this.goalSelector.addGoal(2, new MoumoutonChargeGoal(this, 4.2, 10));
         this.goalSelector.addGoal(3, new MeleeAttackGoal(this, 2, true));
         this.goalSelector.addGoal(4, new BreedGoal(this, 1.2));
         this.goalSelector.addGoal(5, new TemptGoal(this, 1.2, Ingredient.of(Items.WHEAT), false));
@@ -131,6 +189,12 @@ public class MoumoutonEntity extends Animal implements GeoEntity {
             if (!notGood) {
                 int i = random.nextInt(1, 3); // 1 or 2
                 String animation = "random_idle_anim" + i;
+
+                if (animation.equals("random_idle_anim2")) {
+                    // eat grass animation
+                    this.setSheared(false);
+                }
+
                 triggerAnim("actions", animation);
             }
         }
@@ -143,6 +207,13 @@ public class MoumoutonEntity extends Animal implements GeoEntity {
             this.setScared(false);
             this.scaredCooldownTicks = this.SCARED_COOLDOWN;
         }
+
+        if (this.isSheared()) {
+            if (this.shearedTicks < 2400)
+                this.shearedTicks++;
+            else // over 2 minutes
+                this.setSheared(false);
+        }
     }
 
     // GeckoLib
@@ -150,7 +221,7 @@ public class MoumoutonEntity extends Animal implements GeoEntity {
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
         controllers.add(new AnimationController<>(this, "movement", 0, state -> {
-            if (this.isScared()) {
+            if (this.isScared() && !this.isSheared()) {
                 return state.setAndContinue(SCARED);
             }
             if (state.isMoving()) {
@@ -178,23 +249,68 @@ public class MoumoutonEntity extends Animal implements GeoEntity {
 
     // Behavior
 
+
+    @Override
+    public boolean isShearable(@Nullable Player player, ItemStack item, Level level, BlockPos pos) {
+        return this.isAlive() && !this.isSheared() && !this.isBaby();
+    }
+
+    @Override
+    public List<ItemStack> onSheared(@Nullable Player player, ItemStack item, Level level, BlockPos pos) {
+        level.playSound(player, pos, SoundEvents.SHEEP_SHEAR, SoundSource.PLAYERS, 1.0F, 1.0F);
+
+        if (!level.isClientSide) {
+            this.setSheared(true);
+
+            if (this.isScared())
+                this.setScared(false);
+        }
+
+        Item toDrop;
+        int amount = 1;
+        RandomSource random = level.getRandom();
+
+        if (random.nextFloat() > 0.65f) {
+            toDrop = ModItems.DURABLE_WOOL_FIBER.get();
+        } else {
+            toDrop = Items.WHITE_WOOL;
+            amount = 3;
+        }
+
+        return List.of(new ItemStack(toDrop, random.nextInt(amount) + 1));
+    }
+
+    public boolean isSheared() {
+        return this.entityData.get(SHEARED);
+    }
+
+    public void setSheared(boolean sheared) {
+        this.shearedTicks = 0;
+        this.entityData.set(SHEARED, sheared);
+    }
+
     public boolean isScared() {
         return this.entityData.get(DATA_SCARED);
     }
 
-    private void setScared(boolean scared) {
+    private void setScared(boolean scared, int durationInTicks) {
         Level level = this.level();
 
-        if (!level.isClientSide && this.isScared() && !scared) {
+        if (!level.isClientSide && this.isScared() && !scared && !this.isSheared()) {
             this.triggerAnim("actions", "no_longer_scared");
             this.playSound(SoundEvents.SHULKER_OPEN, 0.8f, 1.0f - this.random.nextFloat() * 0.3f);
             this.playSound(SoundEvents.ARMADILLO_ROLL, 0.9f, 0.7f - this.random.nextFloat() * 0.2f);
         }
+
+        this.scaredTicks = durationInTicks;
         this.entityData.set(DATA_SCARED, scared);
-        this.scaredTicks = SCARED_DURATION;
     }
 
-    public void tryScare() {
+    private void setScared(boolean scared) {
+        this.setScared(scared, 100);
+    }
+
+    public void tryScare(int durationInTicks) {
         if (this.getTarget() != null || this.isAggressive()) {
             return;
         }
@@ -202,8 +318,7 @@ public class MoumoutonEntity extends Animal implements GeoEntity {
         if (this.scaredCooldownTicks >= 1)
             return;
 
-        this.scaredTicks = SCARED_DURATION;
-        this.setScared(true);
+        this.setScared(true, durationInTicks);
 
         this.playSound(SoundEvents.ARMADILLO_ROLL, 0.9f, 0.7f - this.random.nextFloat() * 0.2f);
         this.playSound(SoundEvents.SHULKER_CLOSE, 0.8f, 1.0f - this.random.nextFloat() * 0.3f);
@@ -219,15 +334,32 @@ public class MoumoutonEntity extends Animal implements GeoEntity {
 
     @Override
     public boolean hurt(DamageSource source, float amount) {
+        Level level = this.level();
         boolean damaged = super.hurt(source, amount);
 
-        if (damaged && !this.level().isClientSide) {
+        if (damaged && !level.isClientSide) {
             this.triggerAnim("actions", "hurt");
         }
 
-        if (this.isScared())
-            this.setScared(false);
+        if (this.isBaby()) {
+            this.setScared(true, 100);
+            if (!level.isClientSide && source.getEntity() != null) {
+                List<MoumoutonEntity> moumoutonsNearby = FlainsUtils.getEntitiesOfTypeNearbyEntity(
+                        this,
+                        MoumoutonEntity.class,
+                        10,
+                        entity -> entity.isAlive() && !entity.isBaby()
+                );
 
+                for (MoumoutonEntity moumouton : moumoutonsNearby) {
+                    moumouton.setTarget((LivingEntity) source.getEntity());
+                    moumouton.setAggressive(true);
+                }
+            }
+        } else {
+            if (this.isScared())
+                this.setScared(false);
+        }
         return damaged;
     }
 
