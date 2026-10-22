@@ -3,10 +3,12 @@ package net.ssum.flains.common.item;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.common.DeferredSpawnEggItem;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.ssum.flains.Flains;
 import net.ssum.flains.common.block.ModBlocks;
+import net.ssum.flains.common.entity.ModEntities;
 import net.ssum.flains.common.item.custom.HornGasMaskItem;
 
 public class ModItems {
@@ -23,6 +25,15 @@ public class ModItems {
 
     public static final DeferredItem<Item> DURABLE_WOOL_FIBER = ITEMS.register(
             "durable_wool_fiber", () -> new Item(new Item.Properties())
+    );
+
+    // spawn eggs
+    public static final DeferredItem<Item> MOUMOUTON_SPAWN_EGG = ITEMS.register("moumouton_spawn_egg",
+            () -> new DeferredSpawnEggItem(
+                    ModEntities.MOUMOUTON,
+                    0xecdaf0, 0xfff780,
+                    new Item.Properties()
+            )
     );
 
     // plants

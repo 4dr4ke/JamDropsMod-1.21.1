@@ -10,9 +10,11 @@ import java.util.EnumSet;
 
 public class MoumoutonScaredGoal extends Goal {
     private final MoumoutonEntity mob;
+    private final double speedModifier;
 
-    public MoumoutonScaredGoal(MoumoutonEntity mob) {
+    public MoumoutonScaredGoal(MoumoutonEntity mob, double speedModifier) {
         this.mob = mob;
+        this.speedModifier = speedModifier;
         this.setFlags(EnumSet.of(Flag.MOVE, Flag.LOOK, Flag.JUMP));
     }
 
@@ -24,7 +26,6 @@ public class MoumoutonScaredGoal extends Goal {
     @Override
     public void start() {
         if (mob.isSheared()) {
-            System.out.println("SHEARED MOUMOUTON SCARED");
             // makes the mob run away if it cannot hide in its wool
             runAway();
         } else
@@ -34,18 +35,12 @@ public class MoumoutonScaredGoal extends Goal {
 
     private void runAway() {
         Player player = mob.level().getNearestPlayer(mob, 16.0);
-        if (player == null)
-            return;
 
-        System.out.println("NEAREST PLAYER EXISTS YEAH");
-
-        Vec3 from = player.position();
+        Vec3 from = player != null ? player.position() : mob.position();
         Vec3 target = DefaultRandomPos.getPosAway(mob, 16, 7, from);
 
-        System.out.printf("TARGET : " + target);
-
         if (target != null) {
-            mob.getNavigation().moveTo(target.x, target.y, target.z, 1.5d);
+            mob.getNavigation().moveTo(target.x, target.y, target.z, this.speedModifier);
         }
     }
 }

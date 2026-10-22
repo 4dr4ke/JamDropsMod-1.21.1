@@ -56,7 +56,7 @@ public class ModServerEvents {
 
         if (event.getEntity() instanceof MoumoutonEntity moumouton) {
             float chance = random.nextFloat();
-            if (chance > 0.65)
+            if (chance > 0.65f) // 35% chance
                 toAdd = new ItemStack(ModItems.MOUMOUTON_HORN.get());
         }
 
