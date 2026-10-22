@@ -21,7 +21,12 @@ public class ModCreativeModTabs {
                     .title(Component.translatable("itemGroup.flains"))
                     .displayItems((itemDisplayParameters, output) -> {
 
-                        // ADD STUFF TO THE TAB HERE:
+                        // Items
+                        output.accept(ModItems.HORN_GAS_MASK.get());
+                        output.accept(ModItems.MOUMOUTON_HORN.get());
+                        output.accept(ModItems.DURABLE_WOOL_FIBER.get());
+                        output.accept(ModItems.MOUMOUTON_SPAWN_EGG.get());
+
                         // Blocks
                         output.accept(ModBlocks.HARMONY_FLOWER.get());
                         output.accept(ModBlocks.ROSE.get());

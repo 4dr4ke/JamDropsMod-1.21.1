@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "minecraft:iron_ingot"
+    },
+    "B": {
+      "item": "flains:durable_wool_fiber"
+    },
+    "C": {
+      "item": "flains:moumouton_horn"
+    }
+  },
+  "pattern": [
+    "CBC",
+    "A A"
+  ],
+  "result": {
+    "count": 1,
+    "id": "flains:horn_gas_mask"
+  }
+}

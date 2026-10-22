@@ -7,6 +7,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.Goal;
@@ -61,7 +62,10 @@ public class MoumoutonChargeGoal extends Goal {
             return false;
 
         double dist = this.mob.distanceToSqr(target);
-        return dist <= this.triggerChargeRange && dist >= this.minRangeAllowed && this.mob.getSensing().hasLineOfSight(target);
+        if (dist > this.triggerChargeRange || dist < this.minRangeAllowed)
+            return false;
+
+        return this.mob.getSensing().hasLineOfSight(target) && !isTargetTooHigh(target) && !isChargePathBlocked(target);
     }
 
     @Override
@@ -109,12 +113,18 @@ public class MoumoutonChargeGoal extends Goal {
 
         if (!this.preparationSoundPlayed) {
             this.preparationSoundPlayed = true;
-            this.mob.playSound(SoundEvents.SHEEP_HURT, 1.0f, 0.8f);
+            this.mob.playSound(SoundEvents.SHEEP_HURT, 1.0f, 0.6f);
         }
 
         this.stateTicks++;
         if (this.stateTicks >= PREPARATION_TICKS) {
             Vec3 start = this.mob.position();
+
+            // stops the charge if the target is too high or the charge path is blocked
+            if (isTargetTooHigh(target) || isChargePathBlocked(target)) {
+                this.done = true;
+                return;
+            }
 
             // get the direction between the mob and the target, regardless of the Y axis
             // and normalize the direction vector
@@ -130,8 +140,12 @@ public class MoumoutonChargeGoal extends Goal {
             this.chargeEnd = target.position().add(direction.scale(OVERSHOOT));
 
             // start the charge
-            this.mob.getNavigation().moveTo(this.chargeEnd.x, this.chargeEnd.y, this.chargeEnd.z, this.chargeSpeed);
-            this.mob.triggerAnim("actions", "attack");
+            double extraChargeSpeed = this.mob.isSheared() ? 0.6d : 0d;
+            this.mob.getNavigation().moveTo(this.chargeEnd.x, this.chargeEnd.y, this.chargeEnd.z, this.chargeSpeed - extraChargeSpeed);
+
+            // play the charge animation if the mob isn't sheared
+            if (!this.mob.isSheared())
+                this.mob.triggerAnim("actions", "attack");
 
             this.state = State.CHARGE;
             this.stateTicks = 0;
@@ -219,6 +233,48 @@ public class MoumoutonChargeGoal extends Goal {
 
     private static boolean isValidTarget(LivingEntity target) {
         return !(target instanceof Player player) || (!player.isSpectator() && !player.isCreative());
+    }
+
+    private boolean isTargetTooHigh(LivingEntity target) {
+        return target.getY() - this.mob.getY() > 1.1;
+    }
+
+    private boolean isChargePathBlocked(LivingEntity target) {
+        Level level = this.mob.level();
+        Vec3 start = this.mob.position();
+
+        double dx = target.getX() - start.x;
+        double dz = target.getZ() - start.z;
+        double dist = Math.sqrt(dx * dx + dz * dz);
+        if (dist < 1.0E-6) return false;
+
+        double dirX = dx / dist;
+        double dirZ = dz / dist;
+
+        BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
+        int footY = this.mob.getBlockY();
+
+        for (double d = 0.5; d <= dist; d += 0.5) {
+            int x = Mth.floor(start.x + dirX * d);
+            int z = Mth.floor(start.z + dirZ * d);
+
+            boolean feetSolid = isSolid(level, pos.set(x, footY, z));
+            boolean headSolid = isSolid(level, pos.set(x, footY + 1, z));
+
+            if (feetSolid && headSolid) {
+                return true;
+            }
+            if (feetSolid) {
+                footY++;
+            } else if (!isSolid(level, pos.set(x, footY - 1, z)) && footY > level.getMinBuildHeight()) {
+                footY--;
+            }
+        }
+        return false;
+    }
+
+    private static boolean isSolid(Level level, BlockPos pos) {
+        return !level.getBlockState(pos).getCollisionShape(level, pos).isEmpty();
     }
 
     private enum State {

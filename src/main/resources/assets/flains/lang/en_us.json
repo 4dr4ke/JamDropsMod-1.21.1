@@ -6,6 +6,12 @@
   "block.flains.clovers": "Clovers",
   "block.flains.thick_bush": "Thick Bush",
 
+  "item.flains.horn_gas_mask": "Horn Gas Mask",
+  "item.flains.moumouton_horn": "Moumouton Horn",
+  "item.flains.durable_wool_fiber": "Durable Wool Fiber",
+
+  "item.flains.moumouton_spawn_egg": "Moumouton",
+
   "entity.flains.moumouton": "Moumouton",
 
   "itemGroup.flains": "Flains",

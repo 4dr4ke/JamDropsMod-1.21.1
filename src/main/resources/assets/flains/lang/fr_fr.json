@@ -6,6 +6,12 @@
   "block.flains.clovers": "Trèfles (de plaisanterie)",
   "block.flains.thick_bush": "Buisson Dense",
 
+  "item.flains.horn_gas_mask": "Masque à Gas en Cornes",
+  "item.flains.moumouton_horn": "Corne de Moumouton",
+  "item.flains.durable_wool_fiber": "Fibre de Laine Résistante",
+
+  "item.flains.moumouton_spawn_egg": "Oeuf d'Apparition de Moumouton",
+
   "entity.flains.moumouton": "Moumouton",
 
   "itemGroup.flains": "Flains",

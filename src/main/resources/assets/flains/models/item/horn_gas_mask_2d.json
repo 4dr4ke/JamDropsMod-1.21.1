@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/handheld",
+  "textures": {
+    "layer0": "flains:item/horn_gas_mask_2d"
+  }
+}
