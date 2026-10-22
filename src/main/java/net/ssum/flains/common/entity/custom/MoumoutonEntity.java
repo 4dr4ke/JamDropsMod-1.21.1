@@ -48,27 +48,66 @@ import java.util.List;
 import java.util.UUID;
 
 public class MoumoutonEntity extends Animal implements GeoEntity, IShearable {
+
     private static final EntityDataAccessor<Boolean> DATA_SCARED = SynchedEntityData.defineId(MoumoutonEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> SHEARED = SynchedEntityData.defineId(MoumoutonEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> WALKING = SynchedEntityData.defineId(MoumoutonEntity.class, EntityDataSerializers.BOOLEAN);
+
     private final int SCARED_COOLDOWN = 10; // 0.5s
+    private final int SHEARED_REGROW_TICKS = 2400; // 2 minutes
     private static final int WALK_CYCLE_TICKS = 14;
     private static final float WALK_START = 0.2f;
     private static final float WALK_END = 0.8f;
 
-    private int walkTicks = 0;
+    // Animations geckolib
+
+    private static final RawAnimation IDLE = RawAnimation.begin().thenLoop("idle");
+    private static final RawAnimation RANDOM_IDLE_ANIM1 = RawAnimation.begin().thenPlay("random_idle_anim1");
+    private static final RawAnimation RANDOM_IDLE_ANIM2 = RawAnimation.begin().thenPlay("random_idle_anim2");
+    private static final RawAnimation WALK = RawAnimation.begin().thenLoop("walk");
+    private static final RawAnimation RUN = RawAnimation.begin().thenPlayXTimes("run", 3);
+
+    private static final RawAnimation SCARED = RawAnimation.begin()
+            .thenPlay("scared")
+            .thenLoop("scared_idle");
+
+    private static final RawAnimation NO_LONGER_SCARED = RawAnimation.begin().thenPlay("no_longer_scared");
+    private static final RawAnimation DEATH = RawAnimation.begin().thenPlay("death");
+    private static final RawAnimation HURT = RawAnimation.begin().thenPlay("hurt");
+    private static final RawAnimation HIT = RawAnimation.begin().thenPlay("hit");
+    private static final RawAnimation ATTACK = RawAnimation.begin().thenPlay("dash");
+
+    // variables, constructor, attributes
+
     private final AnimatableInstanceCache geoCache = GeckoLibUtil.createInstanceCache(this);
+    private UUID targetUUID;
+
+    private int walkTicks = 0;
     private int scaredTicks = 0;
     private int scaredCooldownTicks = 0;
     private int nextRandomIdleTime = 0;
     private int shearedTicks = 0;
-    private UUID targetUUID;
 
     public MoumoutonEntity(EntityType<? extends Animal> entityType, Level level) {
         super(entityType, level);
     }
 
-    // Data
+    public static AttributeSupplier.Builder createAttribute() {
+        return Mob.createMobAttributes()
+                .add(Attributes.MAX_HEALTH, 14d)
+                .add(Attributes.MOVEMENT_SPEED, 0.1d)
+                .add(Attributes.FOLLOW_RANGE, 50d)
+                .add(Attributes.STEP_HEIGHT, 1.0f)
+                .add(Attributes.ATTACK_DAMAGE, 3d);
+    }
+
+    @Override
+    protected EntityDimensions getDefaultDimensions(Pose pose) {
+        EntityDimensions dimensions = super.getDefaultDimensions(pose);
+        return this.isBaby() ? dimensions.scale(0.5f) : dimensions;
+    }
+
+    // NBT
 
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
@@ -108,7 +147,7 @@ public class MoumoutonEntity extends Animal implements GeoEntity, IShearable {
     public void tick() {
         super.tick();
 
-        // the moumouton remembers its target
+        // remembers its target
         Level level = this.level();
         if (!level.isClientSide && this.targetUUID != null && this.getTarget() == null) {
             if (level instanceof ServerLevel serverLevel) {
@@ -119,57 +158,6 @@ public class MoumoutonEntity extends Animal implements GeoEntity, IShearable {
             }
             this.targetUUID = null;
         }
-    }
-
-    // Animations
-    private static final RawAnimation IDLE =
-            RawAnimation.begin().thenLoop("idle");
-
-    private static final RawAnimation RANDOM_IDLE_ANIM1 =
-            RawAnimation.begin().thenPlay("random_idle_anim1");
-
-    private static final RawAnimation RANDOM_IDLE_ANIM2 =
-            RawAnimation.begin().thenPlay("random_idle_anim2");
-
-    private static final RawAnimation WALK =
-            RawAnimation.begin().thenLoop("walk");
-
-    private static final RawAnimation SCARED = RawAnimation.begin()
-            .thenPlay("scared")
-            .thenLoop("scared_idle");
-
-    private static final RawAnimation NO_LONGER_SCARED = RawAnimation.begin()
-            .thenPlay("no_longer_scared");
-
-    private static final RawAnimation DEATH =
-            RawAnimation.begin().thenPlay("death");
-
-    private static final RawAnimation HURT =
-            RawAnimation.begin().thenPlay("hurt");
-
-    private static final RawAnimation HIT =
-            RawAnimation.begin().thenPlay("hit");
-
-    private static final RawAnimation ATTACK =
-            RawAnimation.begin().thenPlay("dash");
-
-    // Attributes
-
-    public static AttributeSupplier.Builder createAttribute() {
-        return Mob.createMobAttributes()
-                .add(Attributes.MAX_HEALTH, 14d)
-                .add(Attributes.MOVEMENT_SPEED, 0.1d)
-                .add(Attributes.FOLLOW_RANGE, 50d)
-                .add(Attributes.STEP_HEIGHT, 1.0f)
-                .add(Attributes.ATTACK_DAMAGE, 3d);
-    }
-
-    // Baby
-
-    @Override
-    protected EntityDimensions getDefaultDimensions(Pose pose) {
-        EntityDimensions dimensions = super.getDefaultDimensions(pose);
-        return this.isBaby() ? dimensions.scale(0.5f) : dimensions;
     }
 
     // AI
@@ -193,41 +181,55 @@ public class MoumoutonEntity extends Animal implements GeoEntity, IShearable {
     protected void customServerAiStep() {
         super.customServerAiStep();
 
-        nextRandomIdleTime--;
-        if (nextRandomIdleTime <= 0 && !this.level().isClientSide) {
-            nextRandomIdleTime = random.nextInt(300, 450);
+        this.tickRandomIdle();
+        this.tickScared();
+        this.tickSheared();
+        this.tickWalkPulse();
+    }
 
-            boolean notGood = this.isScared() || this.getTarget() != null || this.isAggressive() || !this.getNavigation().isDone();
+    private void tickRandomIdle() {
+        this.nextRandomIdleTime--;
+        if (this.nextRandomIdleTime > 0)
+            return;
 
-            if (!notGood) {
-                int i = random.nextInt(1, 3); // 1 or 2
-                String animation = "random_idle_anim" + i;
+        this.nextRandomIdleTime = this.random.nextInt(300, 450);
 
-                if (animation.equals("random_idle_anim2")) {
-                    // eat grass animation
-                    this.setSheared(false);
-                }
+        boolean notGood = this.isScared() || this.getTarget() != null || this.isAggressive() || !this.getNavigation().isDone();
+        if (notGood)
+            return;
 
-                triggerAnim("actions", animation);
-            }
+        int i = this.random.nextInt(1, 3); // 1 or 2
+        if (i == 2) {
+            // eat grass animation
+            this.setSheared(false);
         }
+        this.triggerAnim("actions", "random_idle_anim" + i);
+    }
 
+    private void tickScared() {
         if (this.scaredCooldownTicks > 0)
             this.scaredCooldownTicks--;
 
-        this.scaredTicks--;
-        if (this.scaredTicks <= 0) {
-            this.setScared(false);
-            this.scaredCooldownTicks = this.SCARED_COOLDOWN;
+        if (this.isScared()) {
+            this.scaredTicks--;
+            if (this.scaredTicks <= 0) {
+                this.setScared(false);
+                this.scaredCooldownTicks = this.SCARED_COOLDOWN;
+            }
         }
+    }
 
-        if (this.isSheared()) {
-            if (this.shearedTicks < 2400)
-                this.shearedTicks++;
-            else // over 2 minutes
-                this.setSheared(false);
-        }
+    private void tickSheared() {
+        if (!this.isSheared())
+            return;
 
+        if (this.shearedTicks < SHEARED_REGROW_TICKS)
+            this.shearedTicks++;
+        else
+            this.setSheared(false);
+    }
+
+    private void tickWalkPulse() {
         boolean walking = isPulseWalking();
         this.entityData.set(WALKING, walking);
         this.walkTicks = walking ? this.walkTicks + 1 : 0;
@@ -267,6 +269,7 @@ public class MoumoutonEntity extends Animal implements GeoEntity, IShearable {
                 .triggerableAnim("hit", HIT)
                 .triggerableAnim("death", DEATH)
                 .triggerableAnim("scared", SCARED)
+                .triggerableAnim("run", RUN)
                 .triggerableAnim("no_longer_scared", NO_LONGER_SCARED));
     }
 
@@ -276,10 +279,6 @@ public class MoumoutonEntity extends Animal implements GeoEntity, IShearable {
     }
 
     // Behavior
-
-    public boolean isPulseWalking() {
-        return this.getNavigation().isInProgress() && !this.isAggressive() && !this.isScared();
-    }
 
     @Override
     public boolean isShearable(@Nullable Player player, ItemStack item, Level level, BlockPos pos) {
@@ -319,6 +318,9 @@ public class MoumoutonEntity extends Animal implements GeoEntity, IShearable {
         this.entityData.set(SHEARED, sheared);
     }
 
+
+
+
     public boolean isScared() {
         return this.entityData.get(DATA_SCARED);
     }
@@ -355,6 +357,14 @@ public class MoumoutonEntity extends Animal implements GeoEntity, IShearable {
             this.playSound(SoundEvents.SHULKER_CLOSE, 0.8f, 1.0f - this.random.nextFloat() * 0.3f);
         }
     }
+
+    public boolean isPulseWalking() {
+        return this.getNavigation().isInProgress() && !this.isAggressive() && !this.isScared();
+    }
+
+
+
+
 
     @Override
     public boolean doHurtTarget(Entity target) {
@@ -402,6 +412,10 @@ public class MoumoutonEntity extends Animal implements GeoEntity, IShearable {
         }
         super.die(damageSource);
     }
+
+
+
+
 
     @Override
     public boolean isFood(ItemStack itemStack) {
