@@ -254,7 +254,6 @@ public class MoumoutonEntity extends Animal implements GeoEntity, IShearable {
                 return state.setAndContinue(SCARED);
             }
             if (state.isMoving() || this.entityData.get(WALKING)) {
-                //boolean running = this.isAggressive() || this.walkAnimation.speed() > 0.7;
                 return state.setAndContinue(WALK);
             }
             return state.setAndContinue(IDLE);
@@ -270,7 +269,8 @@ public class MoumoutonEntity extends Animal implements GeoEntity, IShearable {
                 .triggerableAnim("death", DEATH)
                 .triggerableAnim("scared", SCARED)
                 .triggerableAnim("run", RUN)
-                .triggerableAnim("no_longer_scared", NO_LONGER_SCARED));
+                .triggerableAnim("no_longer_scared", NO_LONGER_SCARED)
+        );
     }
 
     @Override
@@ -412,7 +412,6 @@ public class MoumoutonEntity extends Animal implements GeoEntity, IShearable {
         }
         super.die(damageSource);
     }
-
 
 
 

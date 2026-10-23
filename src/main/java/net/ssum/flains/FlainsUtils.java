@@ -1,6 +1,7 @@
 package net.ssum.flains;
 
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 
@@ -15,7 +16,6 @@ public class FlainsUtils {
      * @return List entities belonging to the given class
      */
     public static <T extends Entity> List<T> getEntitiesOfTypeNearbyEntity(Entity entity, Class<T> tClass, int radius, Predicate<? super T> filter) {
-
         Level level = entity.level();
         AABB searchBox = entity.getBoundingBox().inflate(radius);
 
@@ -24,5 +24,15 @@ public class FlainsUtils {
                 searchBox,
                 filter
         );
+    }
+
+    public static Entity spawnEntityAt(EntityType<? extends Entity> entityType, Level level, double x, double y, double z ) {
+        Entity entity = entityType.create(level);
+        if (entity == null) return null;
+
+        entity.moveTo(x, y, z, 0f, 0f);
+        level.addFreshEntity(entity);
+
+        return entity;
     }
 }
