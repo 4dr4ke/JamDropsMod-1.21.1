@@ -1,5 +1,6 @@
 package net.ssum.flains.common.entity.custom;
 
+import net.minecraft.core.particles.ColorParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
@@ -9,12 +10,16 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
+import net.ssum.flains.common.item.ModItems;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.animation.AnimatableManager;
@@ -66,7 +71,7 @@ public class ExplodingBlossomEntity extends Mob implements GeoEntity {
 
         switch (this.state) {
             case BEATING -> tickBeating();
-            case EXPLODING -> tickExploding();
+            case EXPLODING -> tickExploding(serverLevel);
             case CLOUD -> tickCloud(serverLevel);
         }
     }
@@ -94,12 +99,19 @@ public class ExplodingBlossomEntity extends Mob implements GeoEntity {
         }
     }
 
-    private void tickExploding() {
+    private void tickExploding(ServerLevel level) {
         if (this.explosionTicks == 0) {
             this.playSound(SoundEvents.PUFFER_FISH_BLOW_OUT, 1.2f, 0.6f);
         }
 
         if (++this.explosionTicks >= EXPLOSION_ANIM_TICKS) {
+            level.sendParticles(
+                    ParticleTypes.CAMPFIRE_COSY_SMOKE,
+                    this.getX(), this.getY() + 1, this.getZ(),
+                    15,
+                    0.5, 0.5, 0.5,
+                    0.025
+            );
             this.setInvisible(true);
             this.state = State.CLOUD;
         }
@@ -121,9 +133,22 @@ public class ExplodingBlossomEntity extends Mob implements GeoEntity {
         level.sendParticles(
                 ParticleTypes.SPORE_BLOSSOM_AIR,
                 this.getX(), this.getY() + 1, this.getZ(),
-                30,
+                15,
                 3.0, 1.0, 3.0,
                 0
+        );
+
+        var particleOptions = ColorParticleOption.create(
+                ParticleTypes.ENTITY_EFFECT,
+                0x7eb863
+        );
+
+        level.sendParticles(
+                particleOptions,
+                this.getX(), this.getY() + 1, this.getZ(),
+                30,
+                3.0, 1.0, 3.0,
+                0.01
         );
 
         AABB hitbox = this.getBoundingBox().inflate(CLOUD_RADIUS);
@@ -133,6 +158,12 @@ public class ExplodingBlossomEntity extends Mob implements GeoEntity {
         );
 
         for (LivingEntity entity : entities) {
+            if (entity instanceof Player player) {
+                ItemStack helmet = player.getItemBySlot(EquipmentSlot.HEAD);
+                if (!helmet.isEmpty() && helmet.is(ModItems.HORN_GAS_MASK.get()))
+                    continue;
+            }
+
             entity.addEffect(new MobEffectInstance(MobEffects.POISON, 100, 0, true, true));
         }
     }
