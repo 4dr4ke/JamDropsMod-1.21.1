@@ -16,6 +16,9 @@
   "entity.flains.bramblespike": "Ronce",
   "entity.flains.exploding_blossom": "Fleur Explosive",
 
+  "effect.flains.poison_immunity": "Immunité au Poison",
+  "effect.flains.thorn_protection": "Protection Épineuse",
+
   "itemGroup.flains": "Flains",
   "flains.configuration.title": "Configuration de Flains"
 }

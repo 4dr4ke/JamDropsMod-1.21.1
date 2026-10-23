@@ -95,7 +95,7 @@ public class BramblespikeEntity extends Mob implements GeoEntity {
             entity.makeStuckInBlock(entity.getBlockStateOn(), STUCK);
 
             if (!level.isClientSide) {
-                entity.hurt(this.damageSources().magic(), 3);
+                entity.hurt(this.damageSources().indirectMagic(this, this), 3);
             }
         }
     }

@@ -8,6 +8,7 @@ import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.ssum.flains.Flains;
 import net.ssum.flains.common.block.custom.ThickBushBlock;
+import net.ssum.flains.common.effect.ModEffects;
 
 public class ModBlocks {
     public static final DeferredRegister.Blocks BLOCKS =
@@ -32,17 +33,17 @@ public class ModBlocks {
     );
 
     public static final DeferredBlock<Block> ROSE = BLOCKS.register("rose",
-            () -> new FlowerBlock(MobEffects.SATURATION, 5.0F,
-                    BlockBehaviour.Properties.ofFullCopy(Blocks.POPPY)) // TODO: thorn protection effect
+            () -> new FlowerBlock(ModEffects.THORN_PROTECTION, 35f,
+                    BlockBehaviour.Properties.ofFullCopy(Blocks.POPPY))
     );
 
     public static final DeferredBlock<Block> LAVENDER = BLOCKS.register("lavender",
-            () -> new FlowerBlock(MobEffects.SATURATION, 5.0F,
+            () -> new FlowerBlock(MobEffects.SATURATION, 5.0f,
                     BlockBehaviour.Properties.ofFullCopy(Blocks.POPPY))
     );
 
     public static final DeferredBlock<Block> CORNFLOWER = BLOCKS.register("cornflower",
-            () -> new FlowerBlock(MobEffects.SATURATION, 5.0F,
+            () -> new FlowerBlock(MobEffects.SATURATION, 5.0f,
                     BlockBehaviour.Properties.ofFullCopy(Blocks.POPPY))
     );
 
@@ -50,12 +51,4 @@ public class ModBlocks {
         BLOCKS.register(eventBus);
     }
 }
-
-//    public static final DeferredBlock<Block> SMALL_POPPY = BLOCKS.register("small_poppy",
-//            () -> new Block(BlockBehaviour.Properties.of()
-//                    .noCollission()
-//                    .instabreak()
-//                    .sound(SoundType.GRASS)
-//            )
-//    );
 

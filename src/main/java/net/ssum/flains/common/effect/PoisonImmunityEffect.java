@@ -1,4 +1,4 @@
-package net.ssum.flains;
+package net.ssum.flains.common.effect;
 
 import net.minecraft.core.Holder;
 import net.minecraft.world.effect.MobEffect;
@@ -25,7 +25,6 @@ public class PoisonImmunityEffect extends MobEffect {
         return super.applyEffectTick(entity, amplifier);
     }
 
-    // Petite méthode utilitaire pour éviter la répétition du code de suppression
     private void removeIfPresent(LivingEntity entity, Holder<MobEffect> effect) {
         if (entity.hasEffect(effect)) {
             entity.removeEffect(effect);

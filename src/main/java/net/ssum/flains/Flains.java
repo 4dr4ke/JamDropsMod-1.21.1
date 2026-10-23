@@ -4,6 +4,7 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.SuspiciousEffectHolder;
 import net.ssum.flains.common.block.ModBlocks;
+import net.ssum.flains.common.effect.ModEffects;
 import net.ssum.flains.common.entity.ModEntities;
 import net.ssum.flains.common.item.ModCreativeModTabs;
 import net.ssum.flains.common.item.ModItems;
@@ -46,6 +47,7 @@ public class Flains {
         ModItems.register(modEventBus);
         ModBlocks.register(modEventBus);
         ModEntities.register(modEventBus);
+        ModEffects.register(modEventBus);
         ModTerrablender.registerBiomes();
 
         // Register the item to a creative tab
