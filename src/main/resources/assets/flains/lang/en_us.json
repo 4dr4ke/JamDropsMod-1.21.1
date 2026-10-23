@@ -13,6 +13,8 @@
   "item.flains.moumouton_spawn_egg": "Moumouton",
 
   "entity.flains.moumouton": "Moumouton",
+  "entity.flains.bramblespike": "Bramblespike",
+  "entity.flains.exploding_blossom": "Exploding Blossom",
 
   "itemGroup.flains": "Flains",
   "flains.configuration.title": "Flains Configs"

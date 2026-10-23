@@ -8,6 +8,8 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 import net.ssum.flains.Flains;
+import net.ssum.flains.client.renderer.BramblespikeRenderer;
+import net.ssum.flains.client.renderer.ExplodingBlossomRenderer;
 import net.ssum.flains.client.renderer.MoumoutonRenderer;
 import net.ssum.flains.common.block.ModBlocks;
 import net.ssum.flains.common.entity.ModEntities;
@@ -21,6 +23,16 @@ public class ModClientEvents {
         event.registerEntityRenderer(
                 ModEntities.MOUMOUTON.get(),
                 MoumoutonRenderer::new
+        );
+
+        event.registerEntityRenderer(
+                ModEntities.BRAMBLESPIKE.get(),
+                BramblespikeRenderer::new
+        );
+
+        event.registerEntityRenderer(
+                ModEntities.EXPLODING_BLOSSOM.get(),
+                ExplodingBlossomRenderer::new
         );
     }
 
