@@ -18,6 +18,8 @@
 
   "effect.flains.poison_immunity": "Immunité au Poison",
   "effect.flains.thorn_protection": "Protection Épineuse",
+  "effect.flains.paralysia": "Paralysia",
+  "effect.flains.harmony": "Harmonie",
 
   "itemGroup.flains": "Flains",
   "flains.configuration.title": "Configuration de Flains"

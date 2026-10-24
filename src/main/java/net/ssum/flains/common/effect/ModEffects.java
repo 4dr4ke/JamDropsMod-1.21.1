@@ -13,11 +13,19 @@ public class ModEffects {
             DeferredRegister.create(BuiltInRegistries.MOB_EFFECT, Flains.MOD_ID);
 
     public static final DeferredHolder<MobEffect, MobEffect> POISON_IMMUNITY = MOB_EFFECTS.register("poison_immunity",
-            () -> new PoisonImmunityEffect(MobEffectCategory.BENEFICIAL, 0x4E9F3D)
+            () -> new PoisonImmunityEffect(MobEffectCategory.BENEFICIAL, 0x4e9f3d)
     );
 
     public static final DeferredHolder<MobEffect, MobEffect> THORN_PROTECTION = MOB_EFFECTS.register("thorn_protection",
-            () -> new ThornProtectionEffect(MobEffectCategory.BENEFICIAL, 0x4E9F3D)
+            () -> new ThornProtectionEffect(MobEffectCategory.BENEFICIAL, 0x343f40)
+    );
+
+    public static final DeferredHolder<MobEffect, MobEffect> PARALYSIA = MOB_EFFECTS.register("paralysia",
+            () -> new ThornProtectionEffect(MobEffectCategory.HARMFUL, 0xc97dff)
+    );
+
+    public static final DeferredHolder<MobEffect, MobEffect> HARMONY = MOB_EFFECTS.register("harmony",
+            () -> new ThornProtectionEffect(MobEffectCategory.BENEFICIAL, 0xc97dff)
     );
 
     public static void register(IEventBus eventBus) {

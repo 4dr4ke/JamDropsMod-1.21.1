@@ -31,8 +31,7 @@ public class BramblespikeEntity extends Mob implements GeoEntity {
     private static final EntityDataAccessor<Integer> DATA_DELAY = SynchedEntityData.defineId(BramblespikeEntity.class, EntityDataSerializers.INT);
 
     private int lifeTicks = 40;
-    private int delayTicks = 10;
-    private int delayBeforeTakingDamage = 10;
+    private int delayBeforeTakingDamage = 5;
     private boolean emergeAnim = false;
     private static final Vec3 STUCK = new Vec3(0.1, 0.1, 0.1);
 

@@ -18,6 +18,9 @@
 
   "effect.flains.poison_immunity": "Poison Immunity",
   "effect.flains.thorn_protection": "Thorn Protection",
+  "effect.flains.paralysia": "Paralysia",
+  "effect.flains.harmony": "Harmony",
+
 
   "itemGroup.flains": "Flains",
   "flains.configuration.title": "Flains Configs"
