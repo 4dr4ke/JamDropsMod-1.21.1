@@ -12,7 +12,6 @@ public class ParalysiaEffect extends MobEffect {
 
     @Override
     public boolean applyEffectTick(LivingEntity entity, int amplifier) {
-        // Conserve uniquement la vitesse verticale (gravité) et bloque X et Z
         entity.setDeltaMovement(0, entity.getDeltaMovement().y, 0);
         return super.applyEffectTick(entity, amplifier);
     }
