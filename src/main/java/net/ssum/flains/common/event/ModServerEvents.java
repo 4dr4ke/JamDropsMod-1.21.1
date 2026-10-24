@@ -3,8 +3,9 @@ package net.ssum.flains.common.event;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.damagesource.DamageTypes;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
@@ -12,9 +13,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDropsEvent;
-import net.neoforged.neoforge.event.entity.living.LivingEvent;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.ssum.flains.Flains;
@@ -24,12 +23,31 @@ import net.ssum.flains.common.entity.ModEntities;
 import net.ssum.flains.common.entity.custom.MoumoutonEntity;
 import net.ssum.flains.common.item.ModItems;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @EventBusSubscriber(modid = Flains.MOD_ID)
 public class ModServerEvents {
+    static int gasMaskTicks = 0;
+
+    @SubscribeEvent
+    public static void onGasMaskWorn(PlayerTickEvent.Post event) {
+        Player player = event.getEntity();
+
+        if (player.level().isClientSide)
+            return;
+
+        ItemStack helmet = player.getItemBySlot(EquipmentSlot.HEAD);
+
+        if (helmet.isEmpty() || !helmet.is(ModItems.HORN_GAS_MASK.get()))
+            return;
+
+        gasMaskTicks++;
+        if (gasMaskTicks % 4 == 0) {
+            int level = 4;
+            MobEffectInstance effectInstance = new MobEffectInstance(ModEffects.POISON_IMMUNITY, 40, level - 1, true, true);
+            player.addEffect(effectInstance);
+        }
+    }
 
     @SubscribeEvent
     public static void onPlayerDamage(LivingIncomingDamageEvent event) {

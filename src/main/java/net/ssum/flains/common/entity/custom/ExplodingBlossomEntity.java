@@ -135,18 +135,18 @@ public class ExplodingBlossomEntity extends Mob implements GeoEntity {
                 0
         );
 
-        var particleOptions = ColorParticleOption.create(
-                ParticleTypes.ENTITY_EFFECT,
-                0x7eb863
-        );
-
-        level.sendParticles(
-                particleOptions,
-                this.getX(), this.getY() + 1, this.getZ(),
-                30,
-                3.0, 1.0, 3.0,
-                0.01
-        );
+//        var particleOptions = ColorParticleOption.create(
+//                ParticleTypes.ENTITY_EFFECT,
+//                0x7eb863
+//        );
+//
+//        level.sendParticles(
+//                particleOptions,
+//                this.getX(), this.getY() + 1, this.getZ(),
+//                30,
+//                3.0, 1.0, 3.0,
+//                0.01
+//        );
 
         AABB hitbox = this.getBoundingBox().inflate(CLOUD_RADIUS);
         List<LivingEntity> entities = level.getEntitiesOfClass(
