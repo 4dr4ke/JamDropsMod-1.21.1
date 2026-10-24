@@ -8,6 +8,8 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.ssum.flains.Flains;
 import net.ssum.flains.PoisonImmunityEffect;
+import net.ssum.flains.common.effect.HarmonyEffect;
+import net.ssum.flains.common.effect.ParalysiaEffect;
 
 public class ModPotionEffects {
     public static final DeferredRegister<MobEffect> MOB_EFFECTS =
@@ -16,6 +18,11 @@ public class ModPotionEffects {
     public static final DeferredHolder<MobEffect, MobEffect> POISON_IMMUNITY = MOB_EFFECTS.register("poison_immunity",
             () -> new PoisonImmunityEffect(MobEffectCategory.BENEFICIAL, 0x4E9F3D)
     );
+    public static final DeferredHolder<MobEffect, MobEffect> PARALYSIA = MOB_EFFECTS.register("paralysia",
+            () -> new ParalysiaEffect(MobEffectCategory.HARMFUL, 0x5A5A5A));
+
+    public static final DeferredHolder<MobEffect, MobEffect> HARMONY = MOB_EFFECTS.register("harmony",
+            () -> new HarmonyEffect(MobEffectCategory.BENEFICIAL, 0xFFD700));
 
     public static void register(IEventBus eventBus) {
         MOB_EFFECTS.register(eventBus);
