@@ -3,18 +3,27 @@
   "block.flains.lavender": "Lavande",
   "block.flains.cornflower": "Bleuet",
   "block.flains.rose": "Rose",
+  "block.flains.dead_harmony_flower": "Fleur d'Harmonie Morte",
+  "block.flains.dead_lavender": "Lavande Morte",
+  "block.flains.dead_cornflower": "Bleuet Morte",
+  "block.flains.dead_rose": "Rose Morte",
   "block.flains.clovers": "Trèfles (de plaisanterie)",
   "block.flains.thick_bush": "Buisson Dense",
+  "block.flains.little_grass": "Petite herbe",
+  "block.flains.dead_wood_door": "Porte cassée",
 
   "item.flains.horn_gas_mask": "Masque à Gas en Cornes",
   "item.flains.moumouton_horn": "Corne de Moumouton",
   "item.flains.durable_wool_fiber": "Fibre de Laine Résistante",
+  "item.flains.javelin": "Javelot",
 
   "item.flains.moumouton_spawn_egg": "Moumouton",
+  "item.flains.deer_spawn_egg": "Biche",
 
   "entity.flains.moumouton": "Moumouton",
   "entity.flains.bramblespike": "Ronce",
   "entity.flains.exploding_blossom": "Fleur Explosive",
+  "entity.flains.deer": "Biche",
 
   "effect.flains.poison_immunity": "Immunité au Poison",
   "effect.flains.thorn_protection": "Protection Épineuse",

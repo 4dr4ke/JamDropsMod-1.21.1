@@ -1,5 +1,6 @@
 package net.ssum.flains.client;
 
+import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModContainer;
@@ -9,6 +10,8 @@ import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import net.ssum.flains.Flains;
+import net.ssum.flains.client.renderer.entity.JavelinProjectileRenderer;
+import net.ssum.flains.common.entity.ModEntities;
 
 // This class will not load on dedicated servers. Accessing client side code from here is safe.
 @Mod(value = Flains.MOD_ID, dist = Dist.CLIENT)
@@ -24,6 +27,6 @@ public class FlainsClient {
 
     @SubscribeEvent
     static void onClientSetup(FMLClientSetupEvent event) {
-
+        EntityRenderers.register(ModEntities.JAVELIN_PROJECTILE.get(), JavelinProjectileRenderer::new);
     }
 }

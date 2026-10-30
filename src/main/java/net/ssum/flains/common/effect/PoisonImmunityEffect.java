@@ -19,7 +19,7 @@ public class PoisonImmunityEffect extends MobEffect {
         if (level >= 1) removeIfPresent(entity, MobEffects.POISON);
         if (level >= 2) removeIfPresent(entity, MobEffects.CONFUSION);
         if (level >= 3) removeIfPresent(entity, MobEffects.WEAKNESS);
-        if (level >= 4) removeIfPresent(entity, MobEffects.MOVEMENT_SLOWDOWN);
+        if (level >= 4) removeIfPresent(entity, ModEffects.PARALYSIA);
         if (level >= 5) removeIfPresent(entity, MobEffects.WITHER);
 
         return super.applyEffectTick(entity, amplifier);

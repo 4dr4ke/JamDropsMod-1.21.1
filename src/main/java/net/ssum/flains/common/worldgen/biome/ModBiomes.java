@@ -59,6 +59,7 @@ public class ModBiomes {
         biomeBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, placed.getOrThrow(ModPlacedFeatures.BLOOM_BUSHES));
         biomeBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, placed.getOrThrow(ModPlacedFeatures.BLOOM_CLOVERS));
         biomeBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, placed.getOrThrow(ModPlacedFeatures.BLOOM_TREES));
+        biomeBuilder.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, placed.getOrThrow(ModPlacedFeatures.BLOOM_LITTLE_GRASS));
 
         BiomeDefaultFeatures.addForestGrass(biomeBuilder);
         BiomeDefaultFeatures.addDefaultMushrooms(biomeBuilder);

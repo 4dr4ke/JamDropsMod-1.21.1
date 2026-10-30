@@ -24,6 +24,7 @@ public class ModConfiguredFeatures {
     public static final ResourceKey<ConfiguredFeature<?, ?>> BLOOM_FLOWERS = registerKey("bloom_flowers");
     public static final ResourceKey<ConfiguredFeature<?, ?>> BLOOM_BUSHES = registerKey("bloom_bushes");
     public static final ResourceKey<ConfiguredFeature<?, ?>> BLOOM_CLOVERS = registerKey("bloom_clovers");
+    public static final ResourceKey<ConfiguredFeature<?, ?>> BLOOM_LITTLE_GRASS = registerKey("bloom_little_grass");
 
     public static void bootstrap(BootstrapContext<ConfiguredFeature<?, ?>> context) {
         SimpleWeightedRandomList.Builder<BlockState> petals = SimpleWeightedRandomList.builder();
@@ -52,6 +53,15 @@ public class ModConfiguredFeatures {
                                 new SimpleBlockConfiguration(new WeightedStateProvider(
                                         SimpleWeightedRandomList.<BlockState>builder()
                                                 .add(ModBlocks.THICK_BUSH.get().defaultBlockState(), 1)
+                                                .build())))));
+
+        register(context, BLOOM_LITTLE_GRASS, Feature.FLOWER,
+                new RandomPatchConfiguration(
+                        96, 6, 2,
+                        PlacementUtils.onlyWhenEmpty(Feature.SIMPLE_BLOCK,
+                                new SimpleBlockConfiguration(new WeightedStateProvider(
+                                        SimpleWeightedRandomList.<BlockState>builder()
+                                                .add(ModBlocks.LITTLE_GRASS.get().defaultBlockState(), 1)
                                                 .build())))));
 
         register(context, BLOOM_FLOWERS, Feature.FLOWER,

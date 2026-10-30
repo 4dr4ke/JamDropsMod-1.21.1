@@ -29,6 +29,7 @@ public class ModPlacedFeatures {
     public static final ResourceKey<PlacedFeature> BLOOM_BUSHES = registerKey("bloom_bushes");
     public static final ResourceKey<PlacedFeature> BLOOM_TREES = registerKey("bloom_trees");
     public static final ResourceKey<PlacedFeature> BLOOM_CLOVERS = registerKey("bloom_clovers");
+    public static final ResourceKey<PlacedFeature> BLOOM_LITTLE_GRASS = registerKey("bloom_little_grass");
 
     public static void bootstrap(BootstrapContext<PlacedFeature> context) {
         var configuredFeatures = context.lookup(Registries.CONFIGURED_FEATURE);
@@ -48,6 +49,16 @@ public class ModPlacedFeatures {
                 configuredFeatures.getOrThrow(ModConfiguredFeatures.BLOOM_BUSHES),
                 List.of(
                         CountPlacement.of(8),
+                        InSquarePlacement.spread(),
+                        PlacementUtils.HEIGHTMAP,
+                        BiomeFilter.biome()
+                )
+        );
+
+        register(context, BLOOM_LITTLE_GRASS,
+                configuredFeatures.getOrThrow(ModConfiguredFeatures.BLOOM_LITTLE_GRASS),
+                List.of(
+                        CountPlacement.of(5),
                         InSquarePlacement.spread(),
                         PlacementUtils.HEIGHTMAP,
                         BiomeFilter.biome()

@@ -1,14 +1,11 @@
 package net.ssum.flains;
 
-import net.minecraft.tags.ItemTags;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.SuspiciousEffectHolder;
 import net.ssum.flains.common.block.ModBlocks;
 import net.ssum.flains.common.effect.ModEffects;
 import net.ssum.flains.common.entity.ModEntities;
 import net.ssum.flains.common.item.ModCreativeModTabs;
 import net.ssum.flains.common.item.ModItems;
-import net.ssum.flains.common.worldgen.biome.ModOverworldRegion;
+import net.ssum.flains.common.particle.ModParticles;
 import net.ssum.flains.common.worldgen.biome.ModTerrablender;
 import org.slf4j.Logger;
 
@@ -23,7 +20,8 @@ import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
-import terrablender.api.Regions;
+import software.bernie.geckolib.animatable.GeoAnimatable;
+import software.bernie.geckolib.util.GeckoLibUtil;
 
 // The value here should match an entry in the META-INF/neoforge.mods.toml file
 @Mod(Flains.MOD_ID)
@@ -48,17 +46,20 @@ public class Flains {
         ModBlocks.register(modEventBus);
         ModEntities.register(modEventBus);
         ModEffects.register(modEventBus);
+        ModParticles.register(modEventBus);
         ModTerrablender.registerBiomes();
 
         // Register the item to a creative tab
         modEventBus.addListener(this::addCreative);
 
         // Register our mod's ModConfigSpec so that FML can create and load the config file for us
-        modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
+        modContainer.registerConfig(ModConfig.Type.COMMON, FlainsConfig.SPEC);
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {
-
+        event.enqueueWork(() -> {
+            GeckoLibUtil.registerSyncedAnimatable((GeoAnimatable) ModItems.JAVELIN.get());
+        });
     }
 
     // Add the example block item to the building blocks tab

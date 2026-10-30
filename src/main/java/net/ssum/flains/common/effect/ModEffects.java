@@ -21,11 +21,11 @@ public class ModEffects {
     );
 
     public static final DeferredHolder<MobEffect, MobEffect> PARALYSIA = MOB_EFFECTS.register("paralysia",
-            () -> new ThornProtectionEffect(MobEffectCategory.HARMFUL, 0xc97dff)
+            () -> new ParalysiaEffect(MobEffectCategory.HARMFUL, 0xc97dff)
     );
 
     public static final DeferredHolder<MobEffect, MobEffect> HARMONY = MOB_EFFECTS.register("harmony",
-            () -> new ThornProtectionEffect(MobEffectCategory.BENEFICIAL, 0xc97dff)
+            () -> new HarmonyEffect(MobEffectCategory.BENEFICIAL, 0xc97dff)
     );
 
     public static void register(IEventBus eventBus) {

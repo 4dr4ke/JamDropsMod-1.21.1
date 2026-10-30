@@ -22,18 +22,24 @@ import net.ssum.flains.common.entity.custom.MoumoutonEntity;
 import java.util.EnumSet;
 
 public class MoumoutonChargeGoal extends Goal {
-    private static final int PREPARATION_TICKS = 10; // waits 0.5s before charging the player
+    private static final int PREPARATION_TICKS = 10; // delay before charging the player
     private static final int MAX_CHARGE_TICKS = 30; // duration of the charge
     private static final int RECOVER_TICKS = 20; // stun duration after a charge
     private static final int COOLDOWN_TICKS = 15; // delay before the next attack
     private static final double OVERSHOOT = 10.0; // goes further than the target's position when charging it
-    private static final float KNOCKBACK = 1.5f; // the amount of knockback the target takes when hit by the charge
-    private static final int STEP_INTERVAL = 4; //
+    private static final float KNOCKBACK = 1.5f; // knockback the target takes when hit by the charge
+    private static final int STEP_INTERVAL = 4; // walk pulse step interval
 
     private final MoumoutonEntity mob;
     private final double chargeSpeed;
     private final double triggerChargeRange;
     private final double minRangeAllowed;
+
+    private enum State {
+        PREPARATION,
+        CHARGE,
+        RECOVER;
+    }
 
     private State state = State.PREPARATION; // default state
     private int stateTicks;
@@ -42,12 +48,15 @@ public class MoumoutonChargeGoal extends Goal {
     private boolean done;
     private Vec3 chargeEnd;
     private boolean preparationSoundPlayed = false;
+    private Vec3 chargeDir;
+    private Vec3 chargeStartPos;
+    private double chargeDistance;
 
     public MoumoutonChargeGoal(MoumoutonEntity mob, double chargeSpeed, double triggerRange) {
         this.mob = mob;
         this.chargeSpeed = chargeSpeed;
         this.triggerChargeRange = triggerRange * triggerRange;
-        this.minRangeAllowed = 9.0; //3.0*3.0
+        this.minRangeAllowed = 9.0;
         this.setFlags(EnumSet.of(Flag.MOVE, Flag.LOOK));
     }
 
@@ -136,14 +145,11 @@ public class MoumoutonChargeGoal extends Goal {
                 direction = this.mob.getLookAngle().multiply(1, 0, 1).normalize();
             }
 
-            // set the end position of the charge to the target's position + the overshoot offset
-            this.chargeEnd = target.position().add(direction.scale(OVERSHOOT));
+            this.chargeDir = direction;
+            this.chargeStartPos = start;
+            this.chargeDistance = start.multiply(1, 0, 1)
+                    .distanceTo(target.position().multiply(1, 0, 1)) + OVERSHOOT;
 
-            // start the charge
-            double extraChargeSpeed = this.mob.isSheared() ? 0.6d : 0d;
-            this.mob.getNavigation().moveTo(this.chargeEnd.x, this.chargeEnd.y, this.chargeEnd.z, this.chargeSpeed - extraChargeSpeed);
-
-            // play the charge animation if the mob isn't sheared
             String anim = this.mob.isSheared() ? "run" : "attack";
             this.mob.triggerAnim("actions", anim);
 
@@ -158,6 +164,14 @@ public class MoumoutonChargeGoal extends Goal {
         RandomSource random = level.getRandom();
 
         this.stateTicks++;
+
+        double extraChargeSpeed = this.mob.isSheared() ? 0.6d : 0d;
+        Vec3 pos = this.mob.position();
+        this.mob.getMoveControl().setWantedPosition(
+                pos.x + this.chargeDir.x * 2.0,
+                pos.y,
+                pos.z + this.chargeDir.z * 2.0,
+                this.chargeSpeed - extraChargeSpeed);
 
         if (this.stateTicks % STEP_INTERVAL == 0) {
             float pitch = 1.0f - random.nextFloat() * 0.3f;
@@ -203,7 +217,9 @@ public class MoumoutonChargeGoal extends Goal {
             return;
         }
 
-        if (this.mob.getNavigation().isDone() || this.stateTicks >= MAX_CHARGE_TICKS) {
+        double travelled = this.mob.position().subtract(this.chargeStartPos).multiply(1, 0, 1).length();
+
+        if (this.mob.horizontalCollision || travelled >= this.chargeDistance || this.stateTicks >= MAX_CHARGE_TICKS) {
             startRecover();
         }
     }
@@ -275,12 +291,6 @@ public class MoumoutonChargeGoal extends Goal {
 
     private static boolean isSolid(Level level, BlockPos pos) {
         return !level.getBlockState(pos).getCollisionShape(level, pos).isEmpty();
-    }
-
-    private enum State {
-        PREPARATION,
-        CHARGE,
-        RECOVER;
     }
 
 }
