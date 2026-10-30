@@ -26,14 +26,29 @@ public class ModCreativeModTabs {
                         output.accept(ModItems.MOUMOUTON_HORN.get());
                         output.accept(ModItems.DURABLE_WOOL_FIBER.get());
                         output.accept(ModItems.MOUMOUTON_SPAWN_EGG.get());
+                        output.accept(ModItems.DEER_SPAWN_EGG.get());
+                        output.accept(ModItems.JAVELIN.get());
 
                         // Blocks
                         output.accept(ModBlocks.HARMONY_FLOWER.get());
                         output.accept(ModBlocks.ROSE.get());
                         output.accept(ModBlocks.LAVENDER.get());
                         output.accept(ModBlocks.CORNFLOWER.get());
+                        output.accept(ModBlocks.DEAD_HARMONY_FLOWER.get());
+                        output.accept(ModBlocks.DEAD_ROSE.get());
+                        output.accept(ModBlocks.DEAD_LAVENDER.get());
+                        output.accept(ModBlocks.DEAD_CORNFLOWER.get());
                         output.accept(ModBlocks.CLOVERS.get());
                         output.accept(ModBlocks.THICK_BUSH.get());
+                        output.accept(ModBlocks.LITTLE_GRASS.get());
+                        output.accept(ModBlocks.DEAD_WOOD_LOG.get());
+                        output.accept(ModBlocks.DEAD_WOOD_PLANKS.get());
+                        output.accept(ModBlocks.DEAD_WOOD_WOOD.get());
+                        output.accept(ModBlocks.STRIPPED_DEAD_WOOD_WOOD.get());
+                        output.accept(ModBlocks.STRIPPED_DEAD_WOOD_LOG.get());
+                        output.accept(ModBlocks.DEAD_WOOD_DOOR.get());
+                        output.accept(ModBlocks.DEAD_WOOD_SLAB.get());
+                        output.accept(ModBlocks.DEAD_WOOD_STAIRS.get());
 
                     }).build());
 

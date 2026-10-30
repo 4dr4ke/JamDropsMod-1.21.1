@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/slab_top",
+  "textures": {
+    "bottom": "flains:block/dead_wood_planks",
+    "side": "flains:block/dead_wood_planks",
+    "top": "flains:block/dead_wood_planks"
+  }
+}

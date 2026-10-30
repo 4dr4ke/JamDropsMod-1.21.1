@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "axis=x": {
+      "model": "flains:block/stripped_dead_wood_wood_horizontal",
+      "x": 90,
+      "y": 90
+    },
+    "axis=y": {
+      "model": "flains:block/stripped_dead_wood_wood"
+    },
+    "axis=z": {
+      "model": "flains:block/stripped_dead_wood_wood_horizontal",
+      "x": 90
+    }
+  }
+}

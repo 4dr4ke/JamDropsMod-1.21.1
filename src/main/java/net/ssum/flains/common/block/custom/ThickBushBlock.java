@@ -44,6 +44,11 @@ public class ThickBushBlock extends BushBlock {
     }
 
     @Override
+    protected boolean isCollisionShapeFullBlock(BlockState state, BlockGetter level, BlockPos pos) {
+        return false;
+    }
+
+    @Override
     protected MapCodec<? extends BushBlock> codec() {
         return CODEC;
     }
