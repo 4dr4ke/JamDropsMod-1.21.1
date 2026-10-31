@@ -28,6 +28,9 @@ public class ModCreativeModTabs {
                         output.accept(ModItems.MOUMOUTON_SPAWN_EGG.get());
                         output.accept(ModItems.DEER_SPAWN_EGG.get());
                         output.accept(ModItems.JAVELIN.get());
+                        output.accept(ModItems.GUDANNA_SPAWN_EGG.get());
+                        output.accept(ModItems.GOLDEN_APPLE_ON_A_STICK.get());
+                        output.accept(ModItems.HEDGEHOG_SPAWN_EGG.get());
 
                         // Blocks
                         output.accept(ModBlocks.HARMONY_FLOWER.get());
@@ -41,14 +44,6 @@ public class ModCreativeModTabs {
                         output.accept(ModBlocks.CLOVERS.get());
                         output.accept(ModBlocks.THICK_BUSH.get());
                         output.accept(ModBlocks.LITTLE_GRASS.get());
-                        output.accept(ModBlocks.DEAD_WOOD_LOG.get());
-                        output.accept(ModBlocks.DEAD_WOOD_PLANKS.get());
-                        output.accept(ModBlocks.DEAD_WOOD_WOOD.get());
-                        output.accept(ModBlocks.STRIPPED_DEAD_WOOD_WOOD.get());
-                        output.accept(ModBlocks.STRIPPED_DEAD_WOOD_LOG.get());
-                        output.accept(ModBlocks.DEAD_WOOD_DOOR.get());
-                        output.accept(ModBlocks.DEAD_WOOD_SLAB.get());
-                        output.accept(ModBlocks.DEAD_WOOD_STAIRS.get());
 
                     }).build());
 

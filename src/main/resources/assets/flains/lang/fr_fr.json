@@ -10,20 +10,29 @@
   "block.flains.clovers": "Trèfles (de plaisanterie)",
   "block.flains.thick_bush": "Buisson Dense",
   "block.flains.little_grass": "Petite herbe",
-  "block.flains.dead_wood_door": "Porte cassée",
+
+  "item.minecraft.potion.effect.harmony_potion": "Harmony Potion",
+  "item.minecraft.splash_potion.effect.harmony_potion": "Harmony Splash Potion",
+  "item.minecraft.lingering_potion.effect.harmony_potion": "Harmony Lingering Potion",
+  "item.minecraft.potion.effect.thorn_protection_potion": "Thorn Protection Potion",
+  "item.minecraft.splash_potion.effect.thorn_protection_potion": "Thorn Protection Splash Potion",
+  "item.minecraft.lingering_potion.effect.thorn_protection_potion": "Thorn Protection Lingering Potion",
 
   "item.flains.horn_gas_mask": "Masque à Gas en Cornes",
   "item.flains.moumouton_horn": "Corne de Moumouton",
   "item.flains.durable_wool_fiber": "Fibre de Laine Résistante",
   "item.flains.javelin": "Javelot",
+  "item.flains.golden_apple_on_a_stick": "Pomme en or sur un bâton",
 
   "item.flains.moumouton_spawn_egg": "Moumouton",
   "item.flains.deer_spawn_egg": "Biche",
+  "item.flains.gudanna_spawn_egg": "Gudanna",
+  "item.flains.hedgehog_spawn_egg": "Hérisson",
 
   "entity.flains.moumouton": "Moumouton",
   "entity.flains.bramblespike": "Ronce",
   "entity.flains.exploding_blossom": "Fleur Explosive",
-  "entity.flains.deer": "Biche",
+  "entity.flains.deer": "Cernun",
 
   "effect.flains.poison_immunity": "Immunité au Poison",
   "effect.flains.thorn_protection": "Protection Épineuse",
@@ -31,5 +40,21 @@
   "effect.flains.harmony": "Harmonie",
 
   "itemGroup.flains": "Flains",
-  "flains.configuration.title": "Configuration de Flains"
+  "flains.configuration.title": "Configuration de Flains",
+
+  "flains.tooltip.gas_mask": "Protège des effets toxiques (poison, wither...)",
+  "flains.message.killed_hedgehog": "Comment ai-je osé tuer un hérisson ? :(",
+
+  "flains.advancement.better_air": "Un air plus respirable !",
+  "flains.advancement.better_air_desc": "Se protéger des effets toxiques en portant un masque à gaz !",
+  "flains.advancement.better_than_a_hoe": "Mieux qu'une houe !",
+  "flains.advancement.better_than_a_hoe_desc": "Bêcher le sol à l'aide d'un Gudanna !",
+  "flains.advancement.legendary_companion": "Un mythique compagnon",
+  "flains.advancement.legendary_companion_desc": "Apprivoiser un Gudanna !",
+  "flains.advancement.the_flains": "Flains",
+  "flains.advancement.the_flains_desc": "Entrer dans un biome de plaine fantastique !",
+  "flains.advancement.why": "Pourquoi ?",
+  "flains.advancement.why_desc": "Pourquoi avoir tuer ce pauvre hérisson ?",
+
+  "rune.flains.energy_shortage": "Pas assez d'Énergie"
 }

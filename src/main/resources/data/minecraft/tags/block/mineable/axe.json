@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "flains:dead_wood_log",
+    "flains:stripped_dead_wood_log",
+    "flains:stripped_dead_wood_wood",
+    "flains:dead_wood_planks",
+    "flains:dead_wood_slab",
+    "flains:dead_wood_stairs",
+    "flains:dead_wood_wood",
+    "flains:dead_wood_door"
+  ]
+}

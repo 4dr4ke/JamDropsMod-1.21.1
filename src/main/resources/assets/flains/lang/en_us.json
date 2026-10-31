@@ -23,9 +23,12 @@
   "item.flains.moumouton_horn": "Moumouton Horn",
   "item.flains.durable_wool_fiber": "Durable Wool Fiber",
   "item.flains.javelin": "Javelin",
+  "item.flains.golden_apple_on_a_stick": "Golden Apple on a Stick",
 
   "item.flains.moumouton_spawn_egg": "Moumouton",
   "item.flains.deer_spawn_egg": "Deer",
+  "item.flains.gudanna_spawn_egg": "Gudanna",
+  "item.flains.hedgehog_spawn_egg": "Hedgehog",
 
   "entity.flains.moumouton": "Moumouton",
   "entity.flains.bramblespike": "Bramblespike",
@@ -37,7 +40,29 @@
   "effect.flains.paralysia": "Paralysia",
   "effect.flains.harmony": "Harmony",
 
+  "item.minecraft.potion.effect.harmony_potion": "Harmony Potion",
+  "item.minecraft.splash_potion.effect.harmony_potion": "Harmony Splash Potion",
+  "item.minecraft.lingering_potion.effect.harmony_potion": "Harmony Lingering Potion",
+  "item.minecraft.potion.effect.thorn_protection_potion": "Thorn Protection Potion",
+  "item.minecraft.splash_potion.effect.thorn_protection_potion": "Thorn Protection Splash Potion",
+  "item.minecraft.lingering_potion.effect.thorn_protection_potion": "Thorn Protection Lingering Potion",
 
   "itemGroup.flains": "Flains",
-  "flains.configuration.title": "Flains Configs"
+  "flains.configuration.title": "Flains Configs",
+
+  "flains.tooltip.gas_mask": "Protects against toxic effects (poison, wither, etc.)",
+  "flains.message.killed_hedgehog": "How could I have dared to kill a hedgehog? :(",
+
+  "flains.advancement.better_air": "Better air!",
+  "flains.advancement.better_air_desc": "Protect yourself from toxic effects by wearing a gas mask!",
+  "flains.advancement.better_than_a_hoe": "Better than a hoe!",
+  "flains.advancement.better_than_a_hoe_desc": "Dig up the soil with a Gudanna!",
+  "flains.advancement.legendary_companion": "Legendary companion",
+  "flains.advancement.legendary_companion_desc": "Tame a Gudanna!",
+  "flains.advancement.the_flains": "Flains",
+  "flains.advancement.the_flains_desc": "Enter a fantastical plains biome!",
+  "flains.advancement.why": "Why?",
+  "flains.advancement.why_desc": "Why did you kill that poor hedgehog?",
+
+  "rune.flains.energy_shortage": "Your rune doesn't have enough Energy"
 }

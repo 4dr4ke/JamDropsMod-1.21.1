@@ -1,8 +1,0 @@
-{
-  "render_type": "minecraft:cutout",
-  "parent": "minecraft:block/cube_column",
-  "textures": {
-    "end": "flains:block/stripped_dead_wood_log_top",
-    "side": "flains:block/stripped_dead_wood_log"
-  }
-}
