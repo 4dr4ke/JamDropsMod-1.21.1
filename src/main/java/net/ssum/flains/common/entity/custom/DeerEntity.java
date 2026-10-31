@@ -19,9 +19,11 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.ssum.flains.client.FlainsClientHooks;
+import net.ssum.flains.common.data.ModTags;
 import net.ssum.flains.common.entity.ModEntities;
 import net.ssum.flains.common.entity.ai.DeerScaredGoal;
 import org.jetbrains.annotations.Nullable;
@@ -36,9 +38,9 @@ import software.bernie.geckolib.util.GeckoLibUtil;
 public class DeerEntity extends TamableAnimal implements GeoEntity {
     public static final float MAX_STAMINA = 100f;
     private static final EntityDataAccessor<Float> STAMINA = SynchedEntityData.defineId(DeerEntity.class, EntityDataSerializers.FLOAT);
-    private static final EntityDataAccessor<Boolean> SCARED = SynchedEntityData.defineId(DeerEntity.class, EntityDataSerializers.BOOLEAN);;
+    private static final EntityDataAccessor<Boolean> SCARED = SynchedEntityData.defineId(DeerEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> EXHAUSTED = SynchedEntityData.defineId(DeerEntity.class, EntityDataSerializers.BOOLEAN);
-    private static final EntityDataAccessor<Boolean> RUNNING = SynchedEntityData.defineId(DeerEntity.class, EntityDataSerializers.BOOLEAN);;
+    private static final EntityDataAccessor<Boolean> RUNNING = SynchedEntityData.defineId(DeerEntity.class, EntityDataSerializers.BOOLEAN);
 
     private float staminaRegenDelay = 0;
 
@@ -63,7 +65,7 @@ public class DeerEntity extends TamableAnimal implements GeoEntity {
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
         controllers.add(new AnimationController<>(this, "movement", 5, state -> {
             if (state.isMoving()) {
-                return state.setAndContinue(this.entityData.get(RUNNING) ? RUN : WALK);
+                return state.setAndContinue(RUN);
             }
             return state.setAndContinue(IDLE);
         }));
@@ -131,6 +133,7 @@ public class DeerEntity extends TamableAnimal implements GeoEntity {
                     this.navigation.stop();
                     this.setTarget(null);
                     this.setOrderedToSit(true);
+                    this.triggerAnim("actions", "sit");
                     this.level().broadcastEntityEvent(this, (byte) 7);
                 } else {
                     this.level().broadcastEntityEvent(this, (byte) 6);
@@ -162,9 +165,10 @@ public class DeerEntity extends TamableAnimal implements GeoEntity {
 
             if (stack.isEmpty() && !this.isBaby()) {
                 if (!this.level().isClientSide) {
+                    if (this.isOrderedToSit())
+                        this.triggerAnim("actions", "stand_up");
                     this.setOrderedToSit(false);
                     player.startRiding(this);
-                    this.triggerAnim("actions", "stand_up");
                 }
                 return InteractionResult.sidedSuccess(this.level().isClientSide);
             }
@@ -268,7 +272,7 @@ public class DeerEntity extends TamableAnimal implements GeoEntity {
 
     @Override
     public boolean isFood(ItemStack itemStack) {
-        return itemStack.is(Items.SHORT_GRASS);
+        return itemStack.is(ModTags.Items.BLOOM_FLOWERS);
     }
 
     @Override
@@ -316,7 +320,7 @@ public class DeerEntity extends TamableAnimal implements GeoEntity {
     public void readAdditionalSaveData(CompoundTag compound) {
         super.readAdditionalSaveData(compound);
 
-        if (compound.contains("scared")) this.setScared(compound.contains("scared"));
+        if (compound.contains("scared")) this.setScared(compound.getBoolean("scared"));
         if (compound.contains("stamina")) setStamina(compound.getFloat("stamina"));
         if (compound.contains("exhausted")) entityData.set(EXHAUSTED, compound.getBoolean("exhausted"));
     }

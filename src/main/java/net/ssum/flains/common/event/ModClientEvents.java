@@ -10,8 +10,9 @@ import net.minecraft.client.renderer.BiomeColors;
 import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import net.minecraft.client.resources.PlayerSkin;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.FoliageColor;
 import net.minecraft.world.phys.HitResult;
@@ -19,14 +20,11 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.*;
-import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
-import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.ssum.flains.Flains;
 import net.ssum.flains.client.ClientCameraSlow;
-import net.ssum.flains.client.FlainsClientHooks;
 import net.ssum.flains.client.layer.StaminaBarLayer;
 import net.ssum.flains.client.layer.ThornWrapLayer;
 import net.ssum.flains.client.overlay.ParalysiaOverlay;
@@ -35,9 +33,9 @@ import net.ssum.flains.common.block.ModBlocks;
 import net.ssum.flains.common.effect.ModEffects;
 import net.ssum.flains.common.entity.ModEntities;
 import net.ssum.flains.common.entity.custom.DeerEntity;
+import net.ssum.flains.common.entity.custom.GudannaEntity;
 import net.ssum.flains.common.item.ModItems;
-import net.ssum.flains.common.item.custom.JavelinItem;
-import net.ssum.flains.common.network.LeftClickJavelinPayload;
+import net.ssum.flains.common.network.GudannaAttackPayload;
 import net.ssum.flains.common.particle.ModParticles;
 import net.ssum.flains.common.particle.advanced.ButterflyParticle;
 
@@ -59,21 +57,6 @@ public class ModClientEvents {
             Minecraft mc = Minecraft.getInstance();
             if (mc.player != null && mc.player.getVehicle() instanceof DeerEntity) {
                 event.setCanceled(true);
-            }
-        }
-    }
-
-    // javelin attack animation
-    @SubscribeEvent
-    public static void onLeftClick(InputEvent.InteractionKeyMappingTriggered event) {
-        if (event.isAttack() && Minecraft.getInstance().player != null) {
-            Minecraft mc = Minecraft.getInstance();
-
-            if (mc.hitResult == null || mc.hitResult.getType() == net.minecraft.world.phys.HitResult.Type.MISS || mc.hitResult.getType() == HitResult.Type.ENTITY) {
-                if (mc.player.getMainHandItem().is(ModItems.JAVELIN.get())) {
-                    event.setSwingHand(false);
-                    PacketDistributor.sendToServer(LeftClickJavelinPayload.INSTANCE);
-                }
             }
         }
     }
@@ -121,18 +104,18 @@ public class ModClientEvents {
         );
 
         event.registerEntityRenderer(
-                ModEntities.BRAMBLER.get(),
-                BramblerRenderer::new
+                ModEntities.GUDANNA.get(),
+                GudannaRenderer::new
+        );
+
+        event.registerEntityRenderer(
+                ModEntities.HEDGEHOG.get(),
+                HedgeHogRenderer::new
         );
 
         event.registerEntityRenderer(
                 ModEntities.BRAMBLESPIKE.get(),
                 BramblespikeRenderer::new
-        );
-
-        event.registerEntityRenderer(
-                ModEntities.EXPLODING_BLOSSOM.get(),
-                ExplodingBlossomRenderer::new
         );
     }
 
@@ -195,5 +178,17 @@ public class ModClientEvents {
         input.down = false;
         input.left = false;
         input.right = false;
+    }
+
+    // gudanna payload
+    @SubscribeEvent
+    public static void onAttackKey(InputEvent.InteractionKeyMappingTriggered event) {
+        if (!event.isAttack()) return;
+        Minecraft mc = Minecraft.getInstance();
+        if (mc.player != null && mc.player.getVehicle() instanceof GudannaEntity) {
+            PacketDistributor.sendToServer(new GudannaAttackPayload());
+            event.setSwingHand(false);
+            event.setCanceled(true);
+        }
     }
 }

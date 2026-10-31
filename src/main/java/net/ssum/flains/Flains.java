@@ -1,11 +1,13 @@
 package net.ssum.flains;
 
 import net.ssum.flains.common.block.ModBlocks;
+import net.ssum.flains.common.data.advancement.ModTriggers;
 import net.ssum.flains.common.effect.ModEffects;
 import net.ssum.flains.common.entity.ModEntities;
 import net.ssum.flains.common.item.ModCreativeModTabs;
 import net.ssum.flains.common.item.ModItems;
 import net.ssum.flains.common.particle.ModParticles;
+import net.ssum.flains.common.potion.ModPotions;
 import net.ssum.flains.common.worldgen.biome.ModTerrablender;
 import org.slf4j.Logger;
 
@@ -46,6 +48,8 @@ public class Flains {
         ModBlocks.register(modEventBus);
         ModEntities.register(modEventBus);
         ModEffects.register(modEventBus);
+        ModPotions.register(modEventBus);
+        ModTriggers.register(modEventBus);
         ModParticles.register(modEventBus);
         ModTerrablender.registerBiomes();
 

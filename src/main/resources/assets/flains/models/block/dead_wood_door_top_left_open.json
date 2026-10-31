@@ -1,9 +1,0 @@
-{
-  "render_type": "minecraft:cutout",
-  "parent": "minecraft:block/door_top_left_open",
-  "textures": {
-    "top": "flains:block/dead_wood_door_top",
-    "bottom": "flains:block/dead_wood_door_bottom",
-    "edge": "flains:block/dead_wood_door_edge"
-  }
-}

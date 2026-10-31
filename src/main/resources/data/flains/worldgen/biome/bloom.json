@@ -6,6 +6,7 @@
       "minecraft:canyon"
     ]
   },
+  "creature_spawn_probability": 0.9,
   "downfall": 0.8,
   "effects": {
     "fog_color": 13169407,
@@ -107,9 +108,27 @@
     "creature": [
       {
         "type": "flains:moumouton",
+        "maxCount": 4,
+        "minCount": 2,
+        "weight": 12
+      },
+      {
+        "type": "flains:deer",
         "maxCount": 3,
         "minCount": 1,
-        "weight": 15
+        "weight": 9
+      },
+      {
+        "type": "flains:gudanna",
+        "maxCount": 1,
+        "minCount": 1,
+        "weight": 7
+      },
+      {
+        "type": "flains:hedgehog",
+        "maxCount": 4,
+        "minCount": 2,
+        "weight": 9
       },
       {
         "type": "minecraft:sheep",

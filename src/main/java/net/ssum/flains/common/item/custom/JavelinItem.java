@@ -32,8 +32,6 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 public class JavelinItem extends ProjectileWeaponItem implements GeoItem {
-    private boolean used = false;
-
     public JavelinItem(Properties properties) {
         super(properties);
     }
@@ -75,7 +73,6 @@ public class JavelinItem extends ProjectileWeaponItem implements GeoItem {
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack itemstack = player.getItemInHand(hand);
         player.startUsingItem(hand);
-        used = true;
         return InteractionResultHolder.consume(itemstack);
     }
 
@@ -98,8 +95,6 @@ public class JavelinItem extends ProjectileWeaponItem implements GeoItem {
     public void releaseUsing(ItemStack stack, Level level, LivingEntity livingEntity, int timeCharged) {
         if (!(livingEntity instanceof Player player))
             return;
-
-        used = false;
 
         int charge = this.getUseDuration(stack, livingEntity) - timeCharged;
         float power = BowItem.getPowerForTime(charge);
@@ -128,9 +123,5 @@ public class JavelinItem extends ProjectileWeaponItem implements GeoItem {
     @Override
     protected void shootProjectile(LivingEntity livingEntity, Projectile projectile, int i, float v, float v1, float v2, @Nullable LivingEntity livingEntity1) {
 
-    }
-
-    public boolean isBeingUsed() {
-        return this.used;
     }
 }

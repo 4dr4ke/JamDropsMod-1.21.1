@@ -1,0 +1,38 @@
+{
+  "display": {
+    "icon": {
+      "id": "flains:rose"
+    },
+    "title": {
+      "translate": "flains.advancement.the_flains"
+    },
+    "description": {
+      "translate": "flains.advancement.the_flains_desc"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "parent": "minecraft:story/root",
+  "criteria": {
+    "get_in_biome": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": [
+          {
+            "condition": "minecraft:location_check",
+            "predicate": {
+              "biomes": "flains:bloom"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "get_in_biome"
+    ]
+  ]
+}

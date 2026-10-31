@@ -1,0 +1,43 @@
+{
+  "display": {
+    "icon": {
+      "id": "flains:horn_gas_mask"
+    },
+    "title": {
+      "translate": "flains.advancement.better_air"
+    },
+    "description": {
+      "translate": "flains.advancement.better_air_desc"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "parent": "minecraft:story/root",
+  "criteria": {
+    "equipped_mask": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "player": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "slots": {
+                "armor.head": {
+                  "items": "flains:horn_gas_mask"
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "equipped_mask"
+    ]
+  ]
+}

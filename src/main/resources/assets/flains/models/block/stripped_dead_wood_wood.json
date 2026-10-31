@@ -1,7 +1,0 @@
-{
-  "parent": "minecraft:block/cube_column",
-  "textures": {
-    "end": "flains:block/stripped_dead_wood_wood",
-    "side": "flains:block/stripped_dead_wood_wood"
-  }
-}

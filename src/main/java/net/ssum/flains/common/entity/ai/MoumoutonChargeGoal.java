@@ -67,7 +67,7 @@ public class MoumoutonChargeGoal extends Goal {
         if (target == null || !target.isAlive() || !isValidTarget(target))
             return false;
 
-        if (this.mob.isBaby() || this.mob.isScared() || this.mob.level().getGameTime() < this.nextUseTicks)
+        if (this.mob.isBaby() || this.mob.isScared() || this.mob.isSheared() || this.mob.level().getGameTime() < this.nextUseTicks)
             return false;
 
         double dist = this.mob.distanceToSqr(target);
@@ -80,7 +80,7 @@ public class MoumoutonChargeGoal extends Goal {
     @Override
     public boolean canContinueToUse() {
         LivingEntity target = this.mob.getTarget();
-        return !this.done && !this.mob.isScared() && target != null && target.isAlive() && isValidTarget(target) && this.mob.isWithinRestriction(target.blockPosition());
+        return !this.done && !this.mob.isScared() && !this.mob.isSheared() && target != null && target.isAlive() && isValidTarget(target) && this.mob.isWithinRestriction(target.blockPosition());
     }
 
     @Override

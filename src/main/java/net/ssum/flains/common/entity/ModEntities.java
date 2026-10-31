@@ -33,22 +33,22 @@ public class ModEntities {
                     .sized(0.8f, 1.3f).passengerAttachments(0.8f).build("deer")
             );
 
+    public static final Supplier<EntityType<GudannaEntity>> GUDANNA =
+            ENTITY_TYPES.register("gudanna", () -> EntityType.Builder.of(
+                            GudannaEntity::new, MobCategory.CREATURE)
+                    .sized(2.2f, 2f).passengerAttachments(2.1f).build("gudanna")
+            );
+
+    public static final Supplier<EntityType<HedgeHogEntity>> HEDGEHOG =
+            ENTITY_TYPES.register("hedgehog", () -> EntityType.Builder.of(
+                            HedgeHogEntity::new, MobCategory.CREATURE)
+                    .sized(0.7f, 0.3f).build("hedgehog")
+            );
+
     public static final Supplier<EntityType<BramblespikeEntity>> BRAMBLESPIKE =
             ENTITY_TYPES.register("bramblespike", () -> EntityType.Builder.of(
                     BramblespikeEntity::new, MobCategory.MONSTER)
                     .sized(1f, 1.5f).build("bramblespike")
-            );
-
-    public static final Supplier<EntityType<ExplodingBlossomEntity>> EXPLODING_BLOSSOM =
-            ENTITY_TYPES.register("exploding_blossom", () -> EntityType.Builder.of(
-                            ExplodingBlossomEntity::new, MobCategory.MONSTER)
-                    .sized(1f, 0.5f).build("exploding_blossom")
-            );
-
-    public static final Supplier<EntityType<BramblerEntity>> BRAMBLER =
-            ENTITY_TYPES.register("brambler", () -> EntityType.Builder.of(
-                            BramblerEntity::new, MobCategory.MONSTER)
-                    .sized(0.8f, 2.2f).build("brambler")
             );
 
     public static void register(IEventBus eventBus) {
